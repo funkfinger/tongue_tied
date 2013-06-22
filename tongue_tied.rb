@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'sinatra/base'
+require 'sinatra/config_file'
 
 class TongueTiedApp < Sinatra::Base
 
