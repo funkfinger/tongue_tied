@@ -14,4 +14,9 @@ class TongueTied < MiniTest::Unit::TestCase
     assert last_response.ok?
   end
   
+  def test_config_file_holds_value
+    assert_equal 'bar', app.settings.foo
+  end
+
+  
 end
