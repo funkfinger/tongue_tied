@@ -10,6 +10,6 @@ class TongueTiedApp < Sinatra::Base
   @twilio_client = Twilio::REST::Client.new 'AC50c36451e9ccffe77249b8ca05936b1a', 'cc69499e93d89489afa13bc3fd9a31da'
   
   get '/' do
-    'Tongue Tied App'
+    "Tongue Tied App #{ENV['TWILIO_ACCOUNT_SID']}"
   end
 end
