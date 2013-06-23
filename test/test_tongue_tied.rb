@@ -17,6 +17,10 @@ class TongueTied < MiniTest::Unit::TestCase
   def test_config_file_holds_value
     assert_equal 'bar', app.settings.foo
   end
-
+  
+  def test_twilio_client
+    @twilio_client = Twilio::REST::Client.new app.settings.twilio_account_sid, app.settings.twilio_auth_token
+    assert @twilio_client
+  end
   
 end

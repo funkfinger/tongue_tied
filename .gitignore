@@ -1,4 +1,6 @@
 config.yml
+Procfile
+config.ru
 
 *.gem
 *.rbc
