@@ -6,11 +6,14 @@ This should facilitate text message-based giveaways during events. Will use Twil
 Things to do:
 -------------
 
-- [X] create a project
-- [X] learn a little Github Flavored Markdown... (we'll see if this looks right...)
-- [X] register on Twilio
-- [X] figure out how to do config for Heroku
-- [ ] implement Datamapper with PostgreSQL
+- create a project
+- ~~learn a little Github Flavored Markdown... (we'll see if this looks right...)~~
+- ~~register on Twilio~~
+- ~~figure out how to do config for Heroku~~
+- implement Datamapper with PostgreSQL
+
+Misc.:
+--------------------
 
 Using foreman to start this with an .env file:
     
