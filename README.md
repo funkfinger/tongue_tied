@@ -13,7 +13,9 @@ Things to do:
 - [ ] implement Datamapper with PostgreSQL
 
 Using foreman to start this with an .env file:
+    
     foreman start
 
 Run tests using foreman so that the environment variables get set:
+    
     foreman run bundle exec ruby test/test_tongue_tied.rb
