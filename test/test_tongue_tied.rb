@@ -23,4 +23,8 @@ class TongueTied < MiniTest::Unit::TestCase
     assert @twilio_client
   end
   
+  def test_environment_variables_get_set_in_test_helper
+    assert_equal 'localhost', ENV['DB_HOST']
+  end
+  
 end
