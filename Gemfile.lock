@@ -59,12 +59,16 @@ GEM
     json_pure (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
+    mini_portile (0.5.0)
     multi_json (1.7.7)
+    nokogiri (1.6.0)
+      mini_portile (~> 0.5.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rr (1.1.1)
     sinatra (1.4.3)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -92,7 +96,9 @@ PLATFORMS
 DEPENDENCIES
   data_mapper
   dm-postgres-adapter
+  nokogiri
   rack-test
+  rr
   sinatra (= 1.4.3)
   sinatra-config-file
   twilio-ruby

@@ -8,21 +8,72 @@ class TongueTied < MiniTest::Unit::TestCase
     TongueTiedApp
   end
   
+  def tm(params={})
+    TextMessage.create(params)
+  end
   
-  def test_root_website_ok
-    get '/'
+  def twilio_request
+    params={
+      :SmsSid => '1234567890123456789012345678901234',
+      :AccountSid => '1234567890123456789012345678901234',
+      :From => '16025551212',
+      :To => '16025551212',
+      :Body => 'this is a sample body'
+    }
+  end
+
+######## test below are in reverse cronological order....
+
+  def test_twilio_request
+    post '/api/sms', twilio_request
     assert last_response.ok?
   end
-    
-  def test_twilio_client
-    # run using foreman: foreman run bundle exec ruby test/test_tongue_tied.rb
-      @twilio_client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
-    assert @twilio_client
+
+  def test_sms_api_returns_xml_twilio_can_understand
+    expected_xml = ''
+    xml = Builder::XmlMarkup.new( :indent => 2, :target => expected_xml )
+    xml.instruct!
+    xml.Response{|r| r.Sms = "text message response" }
+    post '/api/sms'
+    assert_equal expected_xml, last_response.body
   end
-  
+
+  def test_sms_api_returns_xml_mime_type
+    post '/api/sms'
+    assert_equal 'text/xml;charset=utf-8', last_response.headers['Content-Type']
+  end
+
+  def test_sms_api_exists
+    post '/api/sms'
+    assert last_response.ok?
+  end
+
+  def test_text_message_has_creation_date_and_is_a_date
+    refute tm.created_at.nil?
+    assert_equal Time.now.day, tm.created_at.day
+  end  
+
+  def test_text_message_has_body
+    refute tm({:body => 'body text'}).body.nil?
+  end  
+
+  def test_create_text_message
+    refute tm.nil?
+  end
+
   def test_environment_variables_get_set_in_test_helper
     # run using foreman: foreman run bundle exec ruby test/test_tongue_tied.rb
     assert_equal 'localhost', ENV['DB_HOST']
   end
   
+  def test_twilio_client
+    # run using foreman: foreman run bundle exec ruby test/test_tongue_tied.rb
+      @twilio_client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+    assert @twilio_client
+  end
+
+  def test_root_website_ok
+    get '/'
+    assert last_response.ok?
+  end
 end

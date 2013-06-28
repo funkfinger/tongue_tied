@@ -5,6 +5,7 @@ gem 'sinatra-config-file'
 gem 'twilio-ruby'
 gem 'dm-postgres-adapter'
 gem 'data_mapper'
+gem 'nokogiri'
 
 group :test do
   gem 'rack-test'
