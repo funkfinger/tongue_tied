@@ -1,3 +1,4 @@
+ruby '1.9.3'
 source 'https://rubygems.org'
 
 gem 'sinatra', '1.4.3'
@@ -6,6 +7,7 @@ gem 'twilio-ruby'
 gem 'dm-postgres-adapter'
 gem 'data_mapper'
 gem 'nokogiri'
+gem 'haml'
 
 group :test do
   gem 'rack-test'

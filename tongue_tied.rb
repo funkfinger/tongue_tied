@@ -2,6 +2,7 @@
 require 'sinatra/base'
 require 'twilio-ruby'
 require 'data_mapper'
+require 'haml'
 
 db_connection_string = "postgres://#{ENV['DB_USER']}:#{ENV['DB_PASS']}@#{ENV['DB_HOST']}/#{ENV['DB_NAME']}"
 DataMapper.setup(:default, db_connection_string)
@@ -24,8 +25,18 @@ end
 DataMapper.auto_migrate!
 
 class TongueTiedApp < Sinatra::Base
+  
   get '/' do
     "Tongue Tied App"
+  end
+  
+  get '/test_form' do
+    haml :test_form
+  end
+
+  get '/twilio/list' do
+    @sms_list = TwilioRequest.all(:limit => 100)
+    haml :twilio_list
   end
   
   get '/api/sms' do

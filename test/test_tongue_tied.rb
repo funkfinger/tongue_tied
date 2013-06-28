@@ -12,31 +12,39 @@ class TongueTied < MiniTest::Unit::TestCase
     TextMessage.create(params)
   end
   
-  def sample_twilio_request
-    params={
+  def sample_twilio_request( params={} )
+    def_params={
       :SmsSid => '1234567890123456789012345678901234',
       :AccountSid => '1234567890123456789012345678901234',
       :From => '16025551212',
       :To => '16025551212',
       :Body => 'this is a sample body'
-    }
+    }.merge( params )
   end
 
 ######## test below are in reverse cronological order....
 
+  def test_list_twilio_requests
+    r = sample_twilio_request( {:Body => 'found_me'} )
+    post '/api/sms', r
+    get '/twilio/list'
+    assert_match /found\_me/, last_response.body, "Couldn't find me - #{r}"
+  end
+
   def test_twilio_request_without_twilio_sid_returns_500_error
     sample_twilio_request.delete :SmsSid
     post '/api/sms', ":SmsSid exists in params hash"
+    refute last_response.ok?, "Should have failed without SmsSid"
   end
 
   def test_twilio_request_creates_twilio_request_database_entry
-      db_count = TwilioRequest.find_all.count
+      db_count = TwilioRequest.count
       post '/api/sms', sample_twilio_request
       assert_equal db_count + 1, TwilioRequest.find_all.count
   end
 
   def test_can_create_twilio_request_entry
-    db_count = TwilioRequest.find_all.count
+    db_count = TwilioRequest.count
     app.process_twilio_request( sample_twilio_request )
     assert_equal db_count + 1, TwilioRequest.find_all.count
   end
