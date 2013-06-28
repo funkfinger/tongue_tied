@@ -12,4 +12,5 @@ gem 'haml'
 group :test do
   gem 'rack-test'
   gem 'rr'
+  gem "fakeweb", "~> 1.3"
 end

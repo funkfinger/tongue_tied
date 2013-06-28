@@ -32,8 +32,8 @@ class TongueTied < MiniTest::Unit::TestCase
   end
 
   def test_twilio_request_without_twilio_sid_returns_500_error
-    sample_twilio_request.delete :SmsSid
-    post '/api/sms', ":SmsSid exists in params hash"
+    r = sample_twilio_request.delete :SmsSid
+    post '/api/sms', r
     refute last_response.ok?, "Should have failed without SmsSid"
   end
 
