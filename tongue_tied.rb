@@ -14,6 +14,13 @@ class TextMessage
   timestamps :at
 end
 
+class TwilioRequest
+  include DataMapper::Resource
+  property :id, Serial
+  property :request_data, Text
+  timestamps :at
+end
+
 DataMapper.auto_migrate!
 
 class TongueTiedApp < Sinatra::Base
@@ -30,11 +37,24 @@ class TongueTiedApp < Sinatra::Base
   
   post '/api/sms' do
     content_type 'text/xml', :charset => 'utf-8'
-    response_xml = ''
-    xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
-    xml.instruct!
-    xml.Response{|r| r.Sms = "text message response" }
-    response_xml
+    halt( 500, 'API error - missing SID') if params['SmsSid'].nil?
+    if process_twilio_request( params )
+      response_xml = ''
+      xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
+      xml.instruct!
+      xml.Response{|r| r.Sms "text message response" }
+      response_xml      
+    else
+      halt 500, 'API error - unable to save'
+    end
+      
   end
+  
+  
+  def process_twilio_request( params )
+    success = TwilioRequest.new( :request_data => params.to_s ).save
+    return success
+  end  
+  
   
 end

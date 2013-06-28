@@ -5,14 +5,14 @@ class TongueTied < MiniTest::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    TongueTiedApp
+    TongueTiedApp.new!
   end
   
   def tm(params={})
     TextMessage.create(params)
   end
   
-  def twilio_request
+  def sample_twilio_request
     params={
       :SmsSid => '1234567890123456789012345678901234',
       :AccountSid => '1234567890123456789012345678901234',
@@ -24,17 +24,31 @@ class TongueTied < MiniTest::Unit::TestCase
 
 ######## test below are in reverse cronological order....
 
+  def test_twilio_request_without_twilio_sid_returns_500_error
+    sample_twilio_request.delete :SmsSid
+    post '/api/sms', ":SmsSid exists in params hash"
+  end
+
+  def test_twilio_request_creates_twilio_request_database_entry
+      db_count = TwilioRequest.find_all.count
+      post '/api/sms', sample_twilio_request
+      assert_equal db_count + 1, TwilioRequest.find_all.count
+  end
+
+  def test_can_create_twilio_request_entry
+    db_count = TwilioRequest.find_all.count
+    app.process_twilio_request( sample_twilio_request )
+    assert_equal db_count + 1, TwilioRequest.find_all.count
+  end
+
   def test_twilio_request
-    post '/api/sms', twilio_request
-    assert last_response.ok?
+    post '/api/sms', sample_twilio_request
+    assert last_response.ok?, "last response wasn't OK - #{sample_twilio_request.to_s}"
   end
 
   def test_sms_api_returns_xml_twilio_can_understand
-    expected_xml = ''
-    xml = Builder::XmlMarkup.new( :indent => 2, :target => expected_xml )
-    xml.instruct!
-    xml.Response{|r| r.Sms = "text message response" }
-    post '/api/sms'
+    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Sms>text message response</Sms>\n</Response>\n"
+    post '/api/sms', sample_twilio_request
     assert_equal expected_xml, last_response.body
   end
 
@@ -44,7 +58,7 @@ class TongueTied < MiniTest::Unit::TestCase
   end
 
   def test_sms_api_exists
-    post '/api/sms'
+    post '/api/sms', sample_twilio_request
     assert last_response.ok?
   end
 
