@@ -14,8 +14,8 @@ Things to do:
 - ~~register on Twilio~~
 - ~~figure out how to do config for Heroku~~
 - ~~start a to-do list~~
-- implement Datamapper with PostgreSQL
-- other setup stuff...
+- ~~implement Datamapper with PostgreSQL~~
+- ~~other setup stuff...~~
 - save phone number, text body and any other data sent to app from Twilio (plus creation date)
 - create lists of numbers based on the text body
 - select winners randomly from list

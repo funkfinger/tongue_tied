@@ -22,7 +22,7 @@ class TwilioRequest
   timestamps :at
 end
 
-DataMapper.auto_migrate!
+DataMapper.auto_upgrade!
 
 class TongueTiedApp < Sinatra::Base
   
