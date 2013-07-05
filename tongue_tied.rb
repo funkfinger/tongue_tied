@@ -39,6 +39,7 @@ class TwilioRequest
   timestamps :at
 end
 
+TwilioRequest.all({:raw => nil}).destroy!
 DataMapper.auto_upgrade!
 
 class TongueTiedApp < Sinatra::Base
