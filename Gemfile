@@ -8,6 +8,7 @@ gem 'dm-postgres-adapter'
 gem 'data_mapper'
 gem 'nokogiri'
 gem 'haml'
+gem 'rake'
 
 group :test do
   gem 'rack-test'
