@@ -38,7 +38,7 @@ class TongueTied < TongueTiedTests
   def test_create_tilio_request_doesnt_break_on_bad_param_passed
     db_count = TextMessage.count
     params = sample_twilio_request({:AccountSid => "1", "Body"  => "2", "bad_key" => "3"})
-    post '/api/twilio_sms', params
+    post '/api/twilio/sms', params
     assert last_response.ok?, "Post failed - params = #{params}"
     assert_equal db_count + 1, TextMessage.count
   end
@@ -49,14 +49,14 @@ class TongueTied < TongueTiedTests
 
   def test_twilio_request_creates_text_message_entry
     db_count = TextMessage.count
-    post '/api/twilio_sms', sample_twilio_request
+    post '/api/twilio/sms', sample_twilio_request
     assert last_response.ok?
     assert_equal db_count + 1, TextMessage.count
   end
 
   def test_list_twilio_requests
     r = sample_twilio_request( {:Body => 'found_me'} )
-    post '/api/twilio_sms', r
+    post '/api/twilio/sms', r
     assert last_response.ok?
     get '/twilio/list'
     assert_match /found\_me/, last_response.body, "Couldn't find me - #{r}"
@@ -64,13 +64,13 @@ class TongueTied < TongueTiedTests
 
   def test_twilio_request_without_twilio_sid_returns_500_error
     r = sample_twilio_request.delete :SmsSid
-    post '/api/twilio_sms', r
+    post '/api/twilio/sms', r
     refute last_response.ok?, "Should have failed without SmsSid"
   end
 
   def test_twilio_request_creates_twilio_request_database_entry
       db_count = TwilioRequest.count
-      post '/api/twilio_sms', sample_twilio_request
+      post '/api/twilio/sms', sample_twilio_request
       assert last_response.ok?
       assert_equal db_count + 1, TwilioRequest.count
   end
@@ -82,25 +82,25 @@ class TongueTied < TongueTiedTests
   end
 
   def test_twilio_request
-    post '/api/twilio_sms', sample_twilio_request
+    post '/api/twilio/sms', sample_twilio_request
     assert last_response.ok?, "last response wasn't OK - #{sample_twilio_request.to_s}"
   end
 
   def test_sms_api_returns_xml_twilio_can_understand
     expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Sms>created</Sms>\n</Response>\n"
-    post '/api/twilio_sms', sample_twilio_request
+    post '/api/twilio/sms', sample_twilio_request
     assert last_response.ok?
     assert_equal expected_xml, last_response.body
   end
 
   def test_sms_api_returns_xml_mime_type
-    post '/api/twilio_sms', sample_twilio_request
+    post '/api/twilio/sms', sample_twilio_request
     assert last_response.ok?
     assert_equal 'text/xml;charset=utf-8', last_response.headers['Content-Type']
   end
 
   def test_sms_api_exists
-    post '/api/twilio_sms', sample_twilio_request
+    post '/api/twilio/sms', sample_twilio_request
     assert last_response.ok?
     assert last_response.ok?
   end

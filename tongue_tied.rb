@@ -63,7 +63,7 @@ class TongueTiedApp < Sinatra::Base
     xml.target!
   end
   
-  post '/api/twilio_sms' do
+  post '/api/twilio/sms' do
     content_type 'text/xml', :charset => 'utf-8'
     halt( 500, 'API error - missing SID') if params['SmsSid'].nil?
     if process_twilio_request( params )
