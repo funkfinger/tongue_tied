@@ -43,6 +43,10 @@ Run the tests using rake:
 or more a little more simply, the default is test:     
 
     foreman run bundle exec rake
+    
+Push to Heroku
+    
+    git push heroku master
 
 Since this is an educational project for me, It's worthwhile to mention that there may be a commercial solution for something this already - Google pointed to http://xaffle.com/index.php/ and http://www.estartqatar.com/coupons.php (and others...)...
 

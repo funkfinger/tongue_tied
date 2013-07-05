@@ -40,8 +40,8 @@ class TwilioRequest
   self.all({:raw => nil}).destroy!
 end
 
-TwilioRequest.all({:raw => nil}).destroy!
-DataMapper.auto_upgrade!
+DataMapper.auto_migrate!
+# DataMapper.auto_upgrade!
 
 class TongueTiedApp < Sinatra::Base
   
