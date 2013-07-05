@@ -37,6 +37,7 @@ class TwilioRequest
   property :ToCountry, String
   property :ApiVersion, String
   timestamps :at
+  self.all({:raw => nil}).destroy!
 end
 
 TwilioRequest.all({:raw => nil}).destroy!
