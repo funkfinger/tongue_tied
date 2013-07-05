@@ -1,4 +1,4 @@
 %h1 twilio list
 %ul
   - @sms_list.each do |sms|
-    %li "#{sms.request_data}"
+    %li "#{sms.raw}"

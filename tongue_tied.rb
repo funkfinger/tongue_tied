@@ -18,7 +18,24 @@ end
 class TwilioRequest
   include DataMapper::Resource
   property :id, Serial
-  property :request_data, Text
+  property :raw, Text, :required => true
+  property :SmsSid, String
+  property :SmsMessageSid, String
+  property :SmsStatus, String
+  property :AccountSid, String
+  property :From, String
+  property :To, String
+  property :Body, String
+  property :SmsSid, String
+  property :FromZip, String
+  property :ToZip, String
+  property :FromState, String
+  property :ToState, String
+  property :FromCity, String
+  property :ToCity, String
+  property :FromCountry, String
+  property :ToCountry, String
+  property :ApiVersion, String
   timestamps :at
 end
 
@@ -46,26 +63,66 @@ class TongueTiedApp < Sinatra::Base
     xml.target!
   end
   
-  post '/api/sms' do
+  post '/api/twilio_sms' do
     content_type 'text/xml', :charset => 'utf-8'
     halt( 500, 'API error - missing SID') if params['SmsSid'].nil?
     if process_twilio_request( params )
-      response_xml = ''
-      xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
-      xml.instruct!
-      xml.Response{|r| r.Sms "text message response" }
-      response_xml      
+      twilio_response_xml( "created" )
     else
       halt 500, 'API error - unable to save'
-    end
-      
+    end 
   end
   
+  def limit_twilio_params( params )
+    valid_keys = [:SmsSid, :SmsMessageSid, :SmsStatus, :AccountSid, :From, :To, 
+    :Body, :SmsSid, :FromZip, :ToZip, :FromState, :ToState, :FromCity, 
+    :ToCity, :FromCountry, :ToCountry, :ApiVersion]
+
+    valid_keys = ["SmsSid", "SmsMessageSid", "SmsStatus", "AccountSid", "From", "To", 
+    "Body", "SmsSid", "FromZip", "ToZip", "FromState", "ToState", "FromCity", 
+    "ToCity", "FromCountry", "ToCountry", "ApiVersion"]
+
+    params.slice!(*valid_keys)
+    params
+  end
+  
+  def twilio_response_xml( message = "response" )
+    response_xml = ''
+    xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
+    xml.instruct!
+    xml.Response{|r| r.Sms message }
+    response_xml
+  end
   
   def process_twilio_request( params )
-    success = TwilioRequest.new( :request_data => params.to_s ).save
-    return success
+    tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
+    return false unless success = tr.save
+    return create_text_message({
+      :body => tr[:Body]
+    })
   end  
   
+  def create_text_message(message)
+    tm = TextMessage.new(message)
+    return tm.save
+  end
   
 end
+
+
+class Hash
+  def slice(*keys)
+    keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
+    keys.each_with_object(self.class.new) { |k, hash| hash[k] = self[k] if has_key?(k) }
+  end
+  
+  def slice!(*keys)
+    keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
+    omit = slice(*self.keys - keys)
+    hash = slice(*keys)
+    replace(hash)
+    omit
+  end
+end
+
+
