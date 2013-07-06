@@ -4,8 +4,14 @@ class TongueTied < TongueTiedTests
 
   include Rack::Test::Methods
   
-  def tm(params={})
-    TextMessage.create(params)
+  def tm( params={} )
+    TextMessage.create( sample_text_message(params) )
+  end
+  
+  def sample_text_message( params={} )
+    def_params={
+      "body" => "message"
+    }.merge( params )
   end
   
   def sample_twilio_request( params={} )
@@ -45,7 +51,27 @@ class TongueTied < TongueTiedTests
     assert last_response.ok?
   end
 
+  def text_from_twilio( params )
+    params = sample_twilio_request( params )
+    post '/api/twilio/sms', params
+    assert last_response.ok?
+  end
+
 ######## test below are in reverse cronological order....
+
+  def test_text_message_has_keyword
+    text_from_twilio( "Body" => ' keyword 1' )
+    tm = TextMessage.first( :keyword => 'keyword' )
+    refute tm.nil?, "message should not be nil - #{tm}"
+    assert_equal tm.keyword, 'keyword', "keyword should be 'keyword'"
+  end
+
+  def test_betwext_keyword_page_displays_text_number
+    create_betwext({ :keyword => 'clickable_key', :sender_number => '1234567890' })
+    get '/api/betwext/keyword/clickable_key'
+    assert last_response.ok?
+    assert_match /1234567890/, last_response.body, "Can't find the number on the page"
+  end
 
   def test_list_betwext_keyword_is_clickable
     create_betwext({ :keyword => 'clickable_key' })

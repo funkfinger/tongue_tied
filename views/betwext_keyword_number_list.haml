@@ -1,0 +1,16 @@
+%h1 betwext keyword / number list
+%ul
+  - @betwext_entries.each do |sms|
+    %li
+      = sms.sender_number
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4244/#{sms.sender_number}" }round 1
+      |
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4245/#{sms.sender_number}" }round 2
+      |
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4246/#{sms.sender_number}" }round 3
+      |
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4247/#{sms.sender_number}" }round 4
+      |
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4248/#{sms.sender_number}" }round 5
+      |
+      %a{ :href=> "/api/betwext/add_to_betwext_list/4249/#{sms.sender_number}" }round 6

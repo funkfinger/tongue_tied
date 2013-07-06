@@ -11,8 +11,17 @@ DataMapper.setup(:default, db_connection_string)
 class TextMessage
   include DataMapper::Resource
   property :id, Serial
-  property :body, String
+  property :body, String, :required => true
+  property :keyword, String
   timestamps :at
+  
+  before :save, :make_keyword
+  
+  def make_keyword
+    self.body.match(/^\s*(\S*)/)
+    self.keyword = $1
+  end
+  
 end
 
 class TwilioRequest
@@ -120,6 +129,12 @@ class TongueTiedApp < Sinatra::Base
     @betwext_keyword_list = BetwextKeyword.all(:limit => 100)
     haml :betwext_keyword_list
   end
+  
+  get '/api/betwext/keyword/:keyword' do
+    @betwext_entries = BetwextRequest.all( :keyword => params[:keyword] )
+    haml :betwext_keyword_number_list
+  end
+  
   
   def limit_twilio_params( params )
     valid_keys = [:SmsSid, :SmsMessageSid, :SmsStatus, :AccountSid, :From, :To, 
