@@ -28,8 +28,105 @@ class TongueTied < TongueTiedTests
       "FromZip"=>"85304"
     }.merge( params )
   end
+  
+  def sample_betwext_request( params={} )
+    def_params = {
+      "message_id" => "a",                # Our unique ID of that specific incoming message
+      "sender_number" => "8005551212",    # The number of the cellular device that sent the message to your Betwext Pro Keyword
+      "recipient_number" => "8005001212", # Your Betwext Pro phone number that received the message
+      "message" => "blah",                # The entire contents of the text message sent to your Betwext Pro account
+      "time_received" => "",              # The unix timestamp (GMT) when we received the message
+      "keyword" => "keyword"              # The first word of the message, and the keyword we parsed the message as containing.
+    }.merge( params )
+  end
+  
+  def create_betwext( params )
+    post '/api/betwext/sms', sample_betwext_request( params )
+    assert last_response.ok?
+  end
 
 ######## test below are in reverse cronological order....
+
+  def test_list_betwext_keyword_is_clickable
+    create_betwext({ :keyword => 'clickable_key' })
+    get '/api/betwext/keyword_list'
+    assert last_response.ok?
+    assert_match /\<a href\=\'(.*?)\'\>clickable_key\<\/a\>/, last_response.body, "Can't find clickable keyword"
+  end
+
+  def test_list_betwext_keywords
+    create_betwext({ :keyword => 'found_me_key' })
+    get '/api/betwext/keyword_list'
+    assert last_response.ok?
+    assert_match /found_me_key/, last_response.body, "Can't find me"
+  end
+
+  def test_betwext_request_message_field_is_required
+    params = sample_betwext_request
+    params.delete('message')
+    post '/api/betwext/sms', params
+    refute last_response.ok?
+  end
+
+  def test_betwext_request_sender_number_field_is_required
+    params = sample_betwext_request
+    params.delete('sender_number')
+    post '/api/betwext/sms', params
+    refute last_response.ok?
+  end
+
+  def test_betwext_request_keyword_field_is_required
+    params = sample_betwext_request
+    params.delete('keyword')
+    post '/api/betwext/sms', params
+    refute last_response.ok?
+  end
+
+  def test_betwext_keyword_is_created
+    post '/api/betwext/sms', sample_betwext_request({ :keyword => 'new_key'})
+    assert last_response.ok?, "Post failed"
+    keyword = BetwextKeyword.first( :keyword => 'new_key' )
+    refute keyword.nil?
+    assert_equal keyword.keyword, 'new_key'
+  end
+
+  def test_list_betwext_entries
+    post '/api/betwext/sms', sample_betwext_request({ :message => 'found me'})
+    assert last_response.ok?, "Post failed"
+    get '/api/betwext/list'
+    assert last_response.ok?, "Get failed"
+    assert_match /found me/, last_response.body, "Can't find me"
+  end
+
+  def test_betwext_api_accepts_bad_key_value_pair
+    post '/api/betwext/sms', sample_betwext_request({ 'bad_key' => 'bad_value' })
+    assert last_response.ok?, "Post failed"
+  end
+
+  def test_betwext_api_contains_correct_values
+    post '/api/betwext/sms', sample_betwext_request({ 'message_id' => 'test_id' })
+    assert last_response.ok?, "Post failed"
+    message = BetwextRequest.first( :message_id => 'test_id' )
+    refute message.nil?
+    assert_equal message.message_id, 'test_id'
+    assert_equal message.sender_number, sample_betwext_request['sender_number']
+    assert_equal message.recipient_number, sample_betwext_request['recipient_number']
+    assert_equal message.message, sample_betwext_request['message']
+    assert_equal message.time_received, sample_betwext_request['time_received']
+    assert_equal message.keyword, sample_betwext_request['keyword']
+  end
+
+  def test_betwext_api_creates_betwexed_entry
+    db_count = BetwextRequest.count
+    post '/api/betwext/sms', sample_betwext_request
+    assert last_response.ok?, "Post failed"
+    assert_equal db_count + 1, BetwextRequest.count
+  end
+
+  def test_betwext_api_endpoint_exists
+    post '/api/betwext/sms', sample_betwext_request
+    assert last_response.ok?, "Post failed"
+  end
 
   def test_create_tilio_request_doesnt_break_on_bad_param_passed
     db_count = TextMessage.count
@@ -41,6 +138,7 @@ class TongueTied < TongueTiedTests
 
   def test_twilio_request_requires_raw
     refute TwilioRequest.new({}).save
+    assert TwilioRequest.new({ :raw => "blah" }).save
   end
 
   def test_twilio_request_creates_text_message_entry

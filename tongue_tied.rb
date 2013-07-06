@@ -37,11 +37,30 @@ class TwilioRequest
   property :ToCountry, String
   property :ApiVersion, String
   timestamps :at
-  self.all({:raw => nil}).destroy!
+  # self.all({:raw => nil}).destroy!
 end
 
-DataMapper.auto_migrate!
-# DataMapper.auto_upgrade!
+class BetwextRequest
+  include DataMapper::Resource
+  property :id, Serial
+  property :raw, Text, :required => true
+  property :message_id, String
+  property :sender_number, String, :required => true
+  property :recipient_number, String
+  property :message, String, :required => true
+  property :time_received, String
+  property :keyword, String, :required => true
+  timestamps :at
+end
+
+class BetwextKeyword
+  include DataMapper::Resource
+  property :id, Serial
+  property :keyword, String, :required => true
+end
+
+# DataMapper.auto_migrate!
+DataMapper.auto_upgrade!
 
 class TongueTiedApp < Sinatra::Base
   
@@ -73,6 +92,33 @@ class TongueTiedApp < Sinatra::Base
     else
       halt 500, 'API error - unable to save'
     end 
+  end
+
+  post '/api/betwext/sms' do
+    halt( 500, 'API error - no params' ) if params.nil?
+    br = BetwextRequest.new({
+      :raw => params.to_s,
+      :message_id => params['message_id'],
+      :sender_number => params['sender_number'],
+      :recipient_number => params['recipient_number'],
+      :message => params['message'],
+      :time_received => params['time_received'],
+      :keyword => params['keyword']
+    })
+    halt( 500, 'API error - can\'t save request' ) if !br.save
+    keyword = BetwextKeyword.new({ :keyword => params['keyword'] })
+    halt( 500, 'API error - can\'t save keyword' ) if !keyword.save
+    'created'
+  end
+  
+  get '/api/betwext/list' do
+    @betwext_list = BetwextRequest.all(:limit => 100)
+    haml :betwext_list
+  end
+  
+  get '/api/betwext/keyword_list' do
+    @betwext_keyword_list = BetwextKeyword.all(:limit => 100)
+    haml :betwext_keyword_list
   end
   
   def limit_twilio_params( params )
@@ -108,8 +154,33 @@ class TongueTiedApp < Sinatra::Base
     tm = TextMessage.new(message)
     return tm.save
   end
+
+  def post_to_betwext(num, list)
+    uri = URI('http://broadcast.betwext.com/subscribers/create_subscriber')
+    req = Net::HTTP::Post.new(uri.path)
+    req.set_form_data('number' => num, 'list' => list)
+    req.add_field 'Host', 'broadcast.betwext.com'
+    req.add_field 'Content-Length', '64'
+    req.add_field 'Cache-Control', 'max-age=0'
+    req.add_field 'Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    req.add_field 'Origin', 'http://broadcast.betwext.com'
+    req.add_field 'User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36'
+    req.add_field 'Content-Type', 'application/x-www-form-urlencoded'
+    req.add_field 'Referer', 'http://broadcast.betwext.com/subscribers/create_subscriber'
+    req.add_field 'Accept-Encoding', 'gzip,deflate,sdch'
+    req.add_field 'Accept-Language', 'en-US,en;q=0.8'
+    req.add_field 'Cookie', ENV['BETWEXT_COOKIE']
+    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(req)
+    end
+    
+  end
+
   
 end
+
+
+
 
 
 class Hash
