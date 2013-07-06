@@ -5,9 +5,9 @@
       = sms.sender_number
       - counter = 0
       - [4244, 4245, 4246, 4247, 4248, 4249].each do |list_id|
-        - counter++
+        - counter += 1
         - if sms.betwext_winners.first(:betwext_list_id => list_id)
-          "round #{counter} |"        
+          %strike round #{counter} |
         - else
-          %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/#{list_id}/#{sms.sender_number}" }"round #{counter}"
+          %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/#{list_id}/#{sms.sender_number}" }round #{counter}
           |
