@@ -60,6 +60,14 @@ class BetwextRequest
   property :time_received, String
   property :keyword, String, :required => true
   timestamps :at
+  has n, :betwext_winners
+end
+
+class BetwextWinner
+  include DataMapper::Resource
+  property :id, Serial
+  property :betwext_list_id, Integer
+  belongs_to :betwext_request  
 end
 
 class BetwextKeyword
@@ -105,6 +113,8 @@ class TongueTiedApp < Sinatra::Base
 
   post '/api/betwext/sms' do
     halt( 500, 'API error - no params' ) if params.nil?
+    br_exists = BetwextRequest.first(:sender_number => params['sender_number'], :keyword => params['keyword'])
+    halt( 200, 'exists') if br_exists
     br = BetwextRequest.new({
       :raw => params.to_s,
       :message_id => params['message_id'],
@@ -137,6 +147,11 @@ class TongueTiedApp < Sinatra::Base
   
   get '/api/betwext/add_to_betwext_list/:keyword/:list/:number' do
     halt( 500, 'Error posting to Betwext' ) unless post_to_betwext(params[:number], params[:list])
+    br = BetwextRequest.first(:sender_number => params[:number], :keyword => params[:keyword])
+    if br.betwext_winners.first(:betwext_list_id => params[:list]).nil?
+      br.betwext_winners.new(:betwext_list_id => params[:list])
+      halt( 500, 'Error creating list entry' ) unless br.save
+    end
     redirect "/api/betwext/keyword/#{params[:keyword]}"
   end
   

@@ -3,14 +3,11 @@
   - @betwext_entries.each do |sms|
     %li
       = sms.sender_number
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4244/#{sms.sender_number}" }round 1
-      |
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4245/#{sms.sender_number}" }round 2
-      |
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4246/#{sms.sender_number}" }round 3
-      |
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4247/#{sms.sender_number}" }round 4
-      |
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4248/#{sms.sender_number}" }round 5
-      |
-      %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/4249/#{sms.sender_number}" }round 6
+      - counter = 0
+      - [4244, 4245, 4246, 4247, 4248, 4249].each do |list_id|
+        - counter++
+        - if sms.betwext_winners.first(:betwext_list_id => list_id)
+          "round #{counter} |"        
+        - else
+          %a{ :href=> "/api/betwext/add_to_betwext_list/#{sms.keyword}/#{list_id}/#{sms.sender_number}" }"round #{counter}"
+          |

@@ -48,7 +48,7 @@ class TongueTied < TongueTiedTests
   
   def create_betwext( params={} )
     post '/api/betwext/sms', sample_betwext_request( params )
-    assert last_response.ok?
+    assert last_response.ok?, "Post failed"
   end
 
   def text_from_twilio( params={} )
@@ -58,6 +58,24 @@ class TongueTied < TongueTiedTests
   end
 
 ######## test below are in reverse cronological order....
+
+  def test_bewext_request_does_not_create_duplicate_number_keyword_pair
+    create_betwext({ 'sender_number' => '01234567890', 'keyword' => 'key_word' })
+    assert_equal 1, BetwextRequest.count
+    create_betwext({ 'sender_number' => '01234567890', 'keyword' => 'key_word' })
+    assert_equal 1, BetwextRequest.count    
+    assert_equal 'exists', last_response.body
+  end
+
+  def test_add_to_betwext_list_also_adds_to_winner_list
+    create_betwext
+    req = BetwextRequest.first
+    list_id = 999
+    assert BetwextWinner.count, 0
+    get "/api/betwext/add_to_betwext_list/#{req.keyword}/#{list_id}/#{req.sender_number}"
+    assert BetwextWinner.count, 1
+    assert_equal req.betwext_winners.first(:betwext_list_id => list_id).betwext_list_id, list_id
+  end
 
   def test_add_to_betwext_list_link
     create_betwext
