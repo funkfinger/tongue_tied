@@ -135,8 +135,9 @@ class TongueTiedApp < Sinatra::Base
     haml :betwext_keyword_number_list
   end
   
-  get '/api/betwext/add_to_betwext_list/:list/:number' do
+  get '/api/betwext/add_to_betwext_list/:keyword/:list/:number' do
     halt( 500, 'Error posting to Betwext' ) unless post_to_betwext(params[:number], params[:list])
+    redirect "/api/betwext/keyword/#{params[:keyword]}"
   end
   
   

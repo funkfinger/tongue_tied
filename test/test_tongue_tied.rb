@@ -62,9 +62,8 @@ class TongueTied < TongueTiedTests
   def test_add_to_betwext_list_link
     create_betwext
     req = BetwextRequest.first
-    get "/api/betwext/add_to_betwext_list/4244/#{req.sender_number}"
-    assert last_response.ok?, "last_response.body = #{last_response.body}"
-    
+    get "/api/betwext/add_to_betwext_list/#{req.keyword}/4244/#{req.sender_number}"
+    assert last_response.redirect?
   end
 
   def test_text_message_has_keyword

@@ -2,4 +2,4 @@
 %ul
   - @betwext_keyword_list.each do |keyword|
     %li
-      %a{ :href=> '/api/betwext/something' }= keyword.keyword
+      %a{ :href=> "/api/betwext/keyword/#{keyword.keyword}" }= keyword.keyword
