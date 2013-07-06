@@ -135,6 +135,11 @@ class TongueTiedApp < Sinatra::Base
     haml :betwext_keyword_number_list
   end
   
+  get '/api/betwext/add_to_betwext_list/:list/:number' do
+    halt( 500, 'Error posting to Betwext' ) unless post_to_betwext(params[:number], params[:list])
+  end
+  
+  
   
   def limit_twilio_params( params )
     valid_keys = [:SmsSid, :SmsMessageSid, :SmsStatus, :AccountSid, :From, :To, 
@@ -188,7 +193,7 @@ class TongueTiedApp < Sinatra::Base
     res = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
     end
-    
+    return res.code == "302" ? true : false
   end
 
   

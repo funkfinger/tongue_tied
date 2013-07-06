@@ -46,18 +46,26 @@ class TongueTied < TongueTiedTests
     }.merge( params )
   end
   
-  def create_betwext( params )
+  def create_betwext( params={} )
     post '/api/betwext/sms', sample_betwext_request( params )
     assert last_response.ok?
   end
 
-  def text_from_twilio( params )
+  def text_from_twilio( params={} )
     params = sample_twilio_request( params )
     post '/api/twilio/sms', params
     assert last_response.ok?
   end
 
 ######## test below are in reverse cronological order....
+
+  def test_add_to_betwext_list_link
+    create_betwext
+    req = BetwextRequest.first
+    get "/api/betwext/add_to_betwext_list/4244/#{req.sender_number}"
+    assert last_response.ok?, "last_response.body = #{last_response.body}"
+    
+  end
 
   def test_text_message_has_keyword
     text_from_twilio( "Body" => ' keyword 1' )
