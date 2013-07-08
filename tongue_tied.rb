@@ -76,6 +76,13 @@ class BetwextKeyword
   property :keyword, String, :required => true
 end
 
+class PlivoRequest
+  include DataMapper::Resource
+  property :id, Serial
+  property :raw, Text, :required => true
+  timestamps :at  
+end
+
 # DataMapper.auto_migrate!
 DataMapper.auto_upgrade!
 
@@ -87,6 +94,17 @@ class TongueTiedApp < Sinatra::Base
   
   get '/test_form' do
     haml :test_form
+  end
+
+  get '/api/plivo/sms/list' do
+    @plivo_list = PlivoRequest.all(:limit => 100)
+    haml :plivo_list
+  end
+
+  post '/api/plivo/sms' do
+    pr = PlivoRequest.new(:raw => params.to_s)
+    halt 500, 'failed to save' unless pr.save
+    'created'
   end
 
   get '/twilio/list' do

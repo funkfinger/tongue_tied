@@ -1,0 +1,4 @@
+%h1 plivo list
+%ul
+  - @plivo_list.each do |sms|
+    %li "#{sms.raw}"
