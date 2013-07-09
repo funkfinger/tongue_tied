@@ -80,6 +80,10 @@ class PlivoRequest
   include DataMapper::Resource
   property :id, Serial
   property :raw, Text, :required => true
+  property :plivo_message_id, String
+  property :to, String
+  property :from, String
+  property :text, String
   timestamps :at  
 end
 
@@ -102,9 +106,15 @@ class TongueTiedApp < Sinatra::Base
   end
 
   post '/api/plivo/sms' do
-    pr = PlivoRequest.new(:raw => params.to_s)
+    pr = PlivoRequest.new(
+      :raw => params.to_s,
+      :plivo_message_id => params['MessageUUID'],
+      :to => params['To'],
+      :from => params['From'],
+      :text => params['Text']
+    )
     halt 500, 'failed to save' unless pr.save
-    'created'
+    plivo_response_xml( "created" )
   end
 
   get '/twilio/list' do
@@ -186,6 +196,14 @@ class TongueTiedApp < Sinatra::Base
 
     params.slice!(*valid_keys)
     params
+  end
+  
+  def plivo_response_xml( message = "response" )
+    response_xml = ''
+    xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
+    xml.instruct!
+    xml.Response{|r| r.Message message }
+    response_xml    
   end
   
   def twilio_response_xml( message = "response" )
