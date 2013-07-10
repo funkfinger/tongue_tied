@@ -198,7 +198,7 @@ class TongueTiedApp < Sinatra::Base
     params
   end
   
-  def plivo_response_xml( message = "response", to, from )
+  def plivo_response_xml( message = "response", from, to )
     response_xml = ''
     xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
     xml.instruct!
