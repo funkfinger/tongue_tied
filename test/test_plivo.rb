@@ -7,7 +7,7 @@ class TongueTiedPlivo < TongueTiedTests
   def sample_plivo_params( params = {} )
     def_params = {
       "MessageUUID" => "message_uuid",
-      "To" => "18005551212",
+      "To" => "18006661212",
       "From" => "18005551212",
       "Text" => "sample text"
     }.merge( params )
@@ -21,7 +21,7 @@ class TongueTiedPlivo < TongueTiedTests
   ######## test below are in reverse cronological order....
   
   def test_plivo_responds_with_xml
-    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message>created</Message>\n</Response>\n"
+    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"18005551212\" dst=\"18006661212\">created</Message>\n</Response>\n"
     create_plivo
     assert_equal expected_xml, last_response.body, "XML not correct"
   end
