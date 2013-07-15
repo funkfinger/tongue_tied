@@ -114,7 +114,7 @@ class TongueTiedApp < Sinatra::Base
       :text => params['Text']
     )
     halt 500, 'failed to save' unless pr.save
-    plivo_response_xml( "created", params['To'], params['From'] )
+    plivo_response_xml( "created", params['From'], params['To'] )
   end
 
   get '/twilio/list' do
