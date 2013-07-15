@@ -78,7 +78,7 @@ class PlivoRequest
   property :plivo_message_id, String
   property :to, String
   property :from, String
-  property :text, String
+  property :text, String, :length => 256
   timestamps :at  
 end
 

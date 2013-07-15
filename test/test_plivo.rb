@@ -20,6 +20,10 @@ class TongueTiedPlivo < TongueTiedTests
 
   ######## test below are in reverse cronological order....
   
+  def test_plivo_with_longer_message
+    create_plivo({"Text" => "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"})
+  end
+  
   def test_plivo_response_xml_has_correct_content_type
     create_plivo
     assert_equal "text/xml;charset=utf-8", last_response.content_type
