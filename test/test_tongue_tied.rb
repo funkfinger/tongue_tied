@@ -4,11 +4,11 @@ class TongueTied < TongueTiedTests
 
   include Rack::Test::Methods
   
-  def tm(params={})
+  def tm(params = {})
     TextMessage.create(sample_text_message(params))
   end
   
-  def sample_text_message(params={})
+  def sample_text_message(params = {})
     def_params={
       "body" => "message"
     }.merge(params)
