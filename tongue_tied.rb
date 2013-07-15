@@ -114,7 +114,7 @@ class TongueTiedApp < Sinatra::Base
       :text => params['Text']
     )
     halt 500, 'failed to save' unless pr.save
-    plivo_response_xml( "created", params['From'], params['To'] )
+    plivo_response_xml( "created", params['To'], params['From'] )
   end
 
   get '/twilio/list' do
@@ -202,7 +202,7 @@ class TongueTiedApp < Sinatra::Base
     response_xml = ''
     xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
     xml.instruct!
-    xml.Response{|r| r.Message({:src => to, :dst => from}, message)}
+    xml.Response{|r| r.Message({:src => from, :dst => to}, message)}
     response_xml    
   end
   
