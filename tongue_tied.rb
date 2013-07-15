@@ -112,10 +112,11 @@ class TongueTiedApp < Sinatra::Base
       :to => params['To'],
       :from => params['From'],
       :text => params['Text']
-    )
+   )
     halt 500, 'failed to save' unless pr.save
+    # Plivo won't work unless the content-type is set to text/xml...
     content_type 'text/xml'
-    plivo_response_xml( "created", params['From'], params['To'] )
+    plivo_response_xml("created", params['From'], params['To'])
   end
 
   get '/twilio/list' do
@@ -124,26 +125,26 @@ class TongueTiedApp < Sinatra::Base
   end
   
   get '/api/sms' do
-    xml = Builder::XmlMarkup.new( :indent => 2 )
+    xml = Builder::XmlMarkup.new(:indent => 2)
     xml.instruct!
-    xml.Response{|r| r.Sms "text message response" }
+    xml.Response{ |r| r.Sms "text message response" }
     xml.target!
   end
   
   post '/api/twilio/sms' do
     content_type 'text/xml', :charset => 'utf-8'
-    halt( 500, 'API error - missing SID') if params['SmsSid'].nil?
-    if process_twilio_request( params )
-      twilio_response_xml( "created" )
+    halt(500, 'API error - missing SID') if params['SmsSid'].nil?
+    if process_twilio_request(params)
+      twilio_response_xml("created")
     else
       halt 500, 'API error - unable to save'
     end 
   end
 
   post '/api/betwext/sms' do
-    halt( 500, 'API error - no params' ) if params.nil?
+    halt(500, 'API error - no params') if params.nil?
     br_exists = BetwextRequest.first(:sender_number => params['sender_number'], :keyword => params['keyword'])
-    halt( 200, 'exists') if br_exists
+    halt(200, 'exists') if br_exists
     br = BetwextRequest.new({
       :raw => params.to_s,
       :message_id => params['message_id'],
@@ -153,9 +154,9 @@ class TongueTiedApp < Sinatra::Base
       :time_received => params['time_received'],
       :keyword => params['keyword']
     })
-    halt( 500, 'API error - can\'t save request' ) if !br.save
+    halt(500, 'API error - can\'t save request') if !br.save
     keyword = BetwextKeyword.new({ :keyword => params['keyword'] })
-    halt( 500, 'API error - can\'t save keyword' ) if !keyword.save
+    halt(500, 'API error - can\'t save keyword') if !keyword.save
     'created'
   end
   
@@ -170,23 +171,23 @@ class TongueTiedApp < Sinatra::Base
   end
   
   get '/api/betwext/keyword/:keyword' do
-    @betwext_entries = BetwextRequest.all( :keyword => params[:keyword] )
+    @betwext_entries = BetwextRequest.all(:keyword => params[:keyword])
     haml :betwext_keyword_number_list
   end
   
   get '/api/betwext/add_to_betwext_list/:keyword/:list/:number' do
-    halt( 500, 'Error posting to Betwext' ) unless post_to_betwext(params[:number], params[:list])
+    halt(500, 'Error posting to Betwext') unless post_to_betwext(params[:number], params[:list])
     br = BetwextRequest.first(:sender_number => params[:number], :keyword => params[:keyword])
     if br.betwext_winners.first(:betwext_list_id => params[:list]).nil?
       br.betwext_winners.new(:betwext_list_id => params[:list])
-      halt( 500, 'Error creating list entry' ) unless br.save
+      halt(500, 'Error creating list entry') unless br.save
     end
     redirect "/api/betwext/keyword/#{params[:keyword]}"
   end
   
   
   
-  def limit_twilio_params( params )
+  def limit_twilio_params(params)
     valid_keys = [:SmsSid, :SmsMessageSid, :SmsStatus, :AccountSid, :From, :To, 
     :Body, :SmsSid, :FromZip, :ToZip, :FromState, :ToState, :FromCity, 
     :ToCity, :FromCountry, :ToCountry, :ApiVersion]
@@ -199,23 +200,23 @@ class TongueTiedApp < Sinatra::Base
     params
   end
   
-  def plivo_response_xml( message = "response", to, from )
+  def plivo_response_xml(message = "response", to, from)
     response_xml = ''
-    xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
+    xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
     xml.instruct!
     xml.Response{|r| r.Message({:src => from, :dst => to}, message)}
     response_xml    
   end
   
-  def twilio_response_xml( message = "response" )
+  def twilio_response_xml(message = "response")
     response_xml = ''
-    xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
+    xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
     xml.instruct!
     xml.Response{|r| r.Sms message }
     response_xml
   end
   
-  def process_twilio_request( params )
+  def process_twilio_request(params)
     tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
     return false unless success = tr.save
     return create_text_message({
