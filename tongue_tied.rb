@@ -211,6 +211,7 @@ class TongueTiedApp < Sinatra::Base
     xml = Builder::XmlMarkup.new( :indent => 2, :target => response_xml )
     xml.instruct!
     xml.Response{|r| r.Sms message }
+    content_type 'text/xml'
     response_xml
   end
   
