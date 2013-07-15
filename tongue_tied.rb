@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'sinatra/base'
 require 'twilio-ruby'
 require 'haml'
-require 'models'
+require 'lib/models'
 
 
 class TongueTiedApp < Sinatra::Base
