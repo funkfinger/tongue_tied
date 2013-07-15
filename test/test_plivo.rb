@@ -20,8 +20,13 @@ class TongueTiedPlivo < TongueTiedTests
 
   ######## test below are in reverse cronological order....
   
+  def test_plivo_response_xml_has_correct_content_type
+    create_plivo
+    assert_equal "text/xml;charset=utf-8", last_response.content_type
+  end
+  
   def test_plivo_responds_with_xml
-    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"18005551212\" dst=\"18006661212\">created</Message>\n</Response>\n"
+    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"18006661212\" dst=\"18005551212\">created</Message>\n</Response>\n"
     create_plivo
     assert_equal expected_xml, last_response.body, "XML not correct"
   end
