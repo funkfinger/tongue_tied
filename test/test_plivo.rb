@@ -15,10 +15,16 @@ class TongueTiedPlivo < TongueTiedTests
 
   def create_plivo( params = {} )
     post '/api/plivo/sms', sample_plivo_params( params )
-    assert last_response.ok?, "Post failed"
+    assert last_response.ok?, "Post failed - #{last_response.body}"
   end
 
   ######## test below are in reverse cronological order....
+  
+  def test_plivo_creates_text_message
+    current_count = TextMessage.count
+    create_plivo({"Text" => "test text message"})
+    assert_equal current_count + 1, TextMessage.count
+  end
   
   def test_plivo_with_longer_message
     create_plivo({"Text" => "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"})

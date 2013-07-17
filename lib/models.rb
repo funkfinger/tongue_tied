@@ -7,8 +7,8 @@ DataMapper.setup(:default, db_connection_string)
 class TextMessage
   include DataMapper::Resource
   property :id, Serial
-  property :body, String, :required => true
-  property :keyword, String
+  property :body, String, :required => true, :length => 160
+  property :keyword, String, :length => 160
   timestamps :at
   
   before :save, :make_keyword
@@ -78,7 +78,7 @@ class PlivoRequest
   property :plivo_message_id, String
   property :to, String
   property :from, String
-  property :text, String, :length => 256
+  property :text, String, :length => 160
   timestamps :at  
 end
 

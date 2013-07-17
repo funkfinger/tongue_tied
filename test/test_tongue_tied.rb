@@ -5,7 +5,9 @@ class TongueTied < TongueTiedTests
   include Rack::Test::Methods
   
   def tm(params = {})
-    TextMessage.create(sample_text_message(params))
+    t = TextMessage.new(sample_text_message(params))
+    assert t.save
+    return t
   end
   
   def sample_text_message(params = {})
@@ -15,6 +17,20 @@ class TongueTied < TongueTiedTests
   end
   
 ######## test below are in reverse cronological order....
+
+  def test_text_message_has_keyword
+    t = tm({"body" => "keyword"})
+    assert_equal "keyword", t["keyword"], "keyword not created"
+  end
+
+  def test_text_message_can_not_be_more_than_160_chars
+    str = ("A" * 161)
+    t = TextMessage.new(sample_text_message({"body" => str}))
+    refute t.save
+    str = ("B" * 160)
+    t = TextMessage.new(sample_text_message({"body" => str}))
+    assert t.save
+  end
 
   def test_text_message_has_creation_date_and_is_a_date
     refute tm.created_at.nil?

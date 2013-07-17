@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'sinatra/base'
@@ -24,19 +23,11 @@ class TongueTiedApp < Sinatra::Base
   end
 
   post '/api/plivo/sms' do
-    pr = PlivoRequest.new(
-      :raw => params.to_s,
-      :plivo_message_id => params['MessageUUID'],
-      :to => params['To'],
-      :from => params['From'],
-      :text => params['Text']
-   )
-    halt 500, 'failed to save' unless pr.save
-    # Plivo won't work unless the content-type is set to text/xml...
+    halt 500, 'API error - failed to save' unless process_plivo_request(params)
     content_type 'text/xml'
     plivo_response_xml("created", params['From'], params['To'])
   end
-
+  
   get '/twilio/list' do
     @sms_list = TwilioRequest.all(:limit => 100)
     haml :twilio_list
@@ -132,6 +123,20 @@ class TongueTiedApp < Sinatra::Base
     xml.instruct!
     xml.Response{|r| r.Sms message }
     response_xml
+  end
+  
+  def process_plivo_request(params)
+    pr = PlivoRequest.new(
+      :raw => params.to_s,
+      :plivo_message_id => params['MessageUUID'],
+      :to => params['To'],
+      :from => params['From'],
+      :text => params['Text']
+    )
+    return false unless pr.save
+    return create_text_message({
+      :body => pr[:text]
+    })
   end
   
   def process_twilio_request(params)
