@@ -9,6 +9,7 @@ class TextMessage
   property :id, Serial
   property :body, String, :required => true, :length => 160
   property :keyword, String, :length => 160
+  property :number, String, :required => true
   timestamps :at
   
   before :save, :make_keyword
@@ -80,6 +81,12 @@ class PlivoRequest
   property :from, String
   property :text, String, :length => 160
   timestamps :at  
+end
+
+class Subscriber
+  include DataMapper::Resource
+  property :id, Serial
+  
 end
 
 # DataMapper.auto_migrate!

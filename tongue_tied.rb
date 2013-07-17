@@ -135,15 +135,17 @@ class TongueTiedApp < Sinatra::Base
     )
     return false unless pr.save
     return create_text_message({
-      :body => pr[:text]
+      :body => pr[:text],
+      :number => pr[:from]
     })
   end
   
   def process_twilio_request(params)
     tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
-    return false unless success = tr.save
+    return false unless tr.save
     return create_text_message({
-      :body => tr[:Body]
+      :body => tr[:Body],
+      :number => tr[:From]
     })
   end  
   

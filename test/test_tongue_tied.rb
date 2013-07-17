@@ -12,11 +12,27 @@ class TongueTied < TongueTiedTests
   
   def sample_text_message(params = {})
     def_params={
-      "body" => "message"
+      "body" => "message",
+      "number" => "18005551212"
     }.merge(params)
   end
   
 ######## test below are in reverse cronological order....
+
+  def test_text_message_is_required
+    refute TextMessage.new({:body => "test"}).save
+  end
+
+  def test_text_message_has_number
+    t = tm({"number" => "123456789"})
+    assert_equal "123456789", t["number"]
+  end
+
+  # def test_text_message_creates_a_subscriber
+  #   count = Subscriber.count
+  #   tm
+  #   assert_equal count + 1, Subscriber.count
+  # end
 
   def test_text_message_has_keyword
     t = tm({"body" => "keyword"})
