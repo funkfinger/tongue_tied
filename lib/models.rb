@@ -13,11 +13,29 @@ class TextMessage
   timestamps :at
   
   before :save, :make_keyword
+  before :save, :create_subscriber
+  before :save, :process_system_keywords
+  
+  has 1, :subscriber
   
   def make_keyword
     self.body.match(/^\s*(\S*)/)
-    self.keyword = $1
+    self.keyword = $1.upcase
   end
+  
+  def create_subscriber
+    sub = Subscriber.first({:number => self.number})
+    self.subscriber = sub.nil? ? Subscriber.new({:number => self.number}) : sub
+    self.subscriber.active = true
+  end
+  
+  def process_system_keywords
+    case self.keyword
+    when /stop/i
+      self.subscriber.active = false
+    end
+  end
+  
 end
 
 class TwilioRequest
@@ -86,7 +104,9 @@ end
 class Subscriber
   include DataMapper::Resource
   property :id, Serial
-  
+  property :number, Text, :required => true
+  property :active, Boolean, :default => true
+  belongs_to :text_message
 end
 
 # DataMapper.auto_migrate!
