@@ -9,6 +9,8 @@ This should facilitate text message-based giveaways during events. Will use Twil
 Things to do:
 -------------
 
+### Basics
+
 - ~~create a project~~
 - ~~learn a little Github Flavored Markdown... (we'll see if this looks right...)~~
 - ~~register on Twilio~~
@@ -16,7 +18,21 @@ Things to do:
 - ~~start a to-do list~~
 - ~~implement Datamapper with PostgreSQL~~
 - ~~other setup stuff...~~
-- save phone number, text body and any other data sent to app from Twilio (plus creation date)
+- ~~save phone number, text body and any other data sent to app from Twilio (plus creation date)~~~
+
+
+### Keywords
+
+- keywords should be in their own model
+- Text messages should have an associated keyword
+- System keywords should be implemented
+  - **STOP** deactivates
+  - **HELP** lists available options (public)
+  - **TT** admin functions probably followed by a user identifier...
+  
+
+### Raffle
+
 - create lists of numbers based on the text body
 - select winners randomly from list
 - text winner list via Twilio

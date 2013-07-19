@@ -8,7 +8,7 @@ class TextMessage
   include DataMapper::Resource
   property :id, Serial
   property :body, String, :required => true, :length => 160
-  property :keyword, String, :length => 160
+  # property :keyword, String, :length => 160
   property :number, String, :required => true
   timestamps :at
   
@@ -17,10 +17,16 @@ class TextMessage
   before :save, :process_system_keywords
   
   has 1, :subscriber
+  has 1, :keyword
   
   def make_keyword
     self.body.match(/^\s*(\S*)/)
-    self.keyword = $1.upcase
+    w = Keyword.first({:word => $1.upcase})
+    if w.nil?
+      self.keyword = Keyword.new({:word => $1.upcase})
+    else
+      self.keyword = w
+    end
   end
   
   def create_subscriber
@@ -30,7 +36,7 @@ class TextMessage
   end
   
   def process_system_keywords
-    case self.keyword
+    case self.keyword.word
     when /stop/i
       self.subscriber.active = false
     end
@@ -109,5 +115,38 @@ class Subscriber
   belongs_to :text_message
 end
 
+class Campaign
+  include DataMapper::Resource
+  property :id, Serial
+  property :name, String, :required => true, :length => 160
+  property :keyword, String, :required => true, :length => 160
+  
+  before :save, :upcase_keyword
+  # has 1, :keyword
+  
+  def upcase_keyword
+    self.keyword.upcase!
+  end
+  
+end
+
+class Keyword
+  include DataMapper::Resource
+  property :id, Serial
+  property :word, String, :required => true, :length => 160
+
+  before :save, :upcase_word
+
+  # belongs_to :campaign
+  belongs_to :text_message
+
+  def upcase_word
+    self.word.upcase!
+  end
+
+end
+
+
 # DataMapper.auto_migrate!
+DataMapper.finalize
 DataMapper.auto_upgrade!

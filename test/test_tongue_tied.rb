@@ -6,7 +6,7 @@ class TongueTied < TongueTiedTests
   
   def tm(params = {})
     t = TextMessage.new(sample_text_message(params))
-    assert t.save
+    assert t.save, "failed basic save - #{t.body}"
     return t
   end
   
@@ -19,29 +19,9 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
-  def test_keyword_is_indifferent_to_whitespace
-    t = TextMessage.new(sample_text_message({"body" => " key "}))
-    assert t.save
-    assert_equal "KEY", t.keyword
-    t = TextMessage.new(sample_text_message({"body" => " \nkey word\n "}))
-    assert t.save
-    assert_equal "KEY", t.keyword
-  end
-
   def test_fails_on_pure_whitespace_message
     refute TextMessage.new(sample_text_message({"body" => " "})).save
     refute TextMessage.new(sample_text_message({"body" => " \n "})).save
-  end
-
-  def test_stop_keyword_deactivates_subscriber_and_is_case_indifferent
-    t = tm
-    assert t.subscriber.active
-    t = tm("body" => "stop")
-    refute t.subscriber.active
-    t = tm
-    assert t.subscriber.active
-    t = tm("body" => "sToP")
-    refute t.subscriber.active    
   end
 
   def test_subscriber_is_reactivated_if_new_message_is_received
@@ -82,11 +62,6 @@ class TongueTied < TongueTiedTests
     tm
     assert_equal count + 1, Subscriber.count
     assert_equal tm.subscriber.number, tm.number
-  end
-
-  def test_text_message_has_keyword_and_is_uppercase
-    t = tm({"body" => "keyword"})
-    assert_equal "KEYWORD", t["keyword"], "keyword not created"
   end
 
   def test_text_message_can_not_be_more_than_160_chars
