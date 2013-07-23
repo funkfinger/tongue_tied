@@ -22,6 +22,35 @@ class TwilioRequest
   property :ToCountry, String
   property :ApiVersion, String
   timestamps :at
-  # self.all({:raw => nil}).destroy!
+  # self.all({:raw => nil}).destroy!  
+  
+  def self.response_xml(message = "response")
+    response_xml = ''
+    xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
+    xml.instruct!
+    xml.Response{|r| r.Sms message }
+    response_xml
+  end
+    
+  def self.create_twilio_request(params)
+    tr = self.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
+    return false unless tr.save
+    return TextMessage.create_text_message({
+      :body => tr[:Body],
+      :number => tr[:From]
+    })
+  end  
+  
+  private
+  
+  def self.limit_twilio_params(params)
+    valid_keys = ["SmsSid", "SmsMessageSid", "SmsStatus", "AccountSid", "From", "To", 
+    "Body", "SmsSid", "FromZip", "ToZip", "FromState", "ToState", "FromCity", 
+    "ToCity", "FromCountry", "ToCountry", "ApiVersion"]
+
+    params.slice!(*valid_keys)
+    params
+  end
+  
 
 end

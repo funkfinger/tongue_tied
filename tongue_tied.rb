@@ -44,8 +44,8 @@ class TongueTiedApp < Sinatra::Base
   post '/api/twilio/sms' do
     content_type 'text/xml', :charset => 'utf-8'
     halt(500, 'API error - missing SID') if params['SmsSid'].nil?
-    if process_twilio_request(params)
-      twilio_response_xml("created")
+    if TwilioRequest.create_twilio_request(params)
+      TwilioRequest.response_xml("created")
     else
       halt 500, 'API error - unable to save'
     end 
@@ -97,36 +97,6 @@ class TongueTiedApp < Sinatra::Base
   
   
   
-  def limit_twilio_params(params)
-    valid_keys = [:SmsSid, :SmsMessageSid, :SmsStatus, :AccountSid, :From, :To, 
-    :Body, :SmsSid, :FromZip, :ToZip, :FromState, :ToState, :FromCity, 
-    :ToCity, :FromCountry, :ToCountry, :ApiVersion]
-
-    valid_keys = ["SmsSid", "SmsMessageSid", "SmsStatus", "AccountSid", "From", "To", 
-    "Body", "SmsSid", "FromZip", "ToZip", "FromState", "ToState", "FromCity", 
-    "ToCity", "FromCountry", "ToCountry", "ApiVersion"]
-
-    params.slice!(*valid_keys)
-    params
-  end
-  
-  
-  def twilio_response_xml(message = "response")
-    response_xml = ''
-    xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
-    xml.instruct!
-    xml.Response{|r| r.Sms message }
-    response_xml
-  end
-    
-  def process_twilio_request(params)
-    tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
-    return false unless tr.save
-    return TextMessage.create_text_message({
-      :body => tr[:Body],
-      :number => tr[:From]
-    })
-  end  
   
   def post_to_betwext(num, list)
     uri = URI('http://broadcast.betwext.com/subscribers/create_subscriber')

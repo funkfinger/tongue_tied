@@ -83,7 +83,7 @@ class TongueTiedTwilio < TongueTiedTests
 
   def test_can_create_twilio_request_entry
     db_count = TwilioRequest.count
-    app.process_twilio_request( sample_twilio_request )
+    TwilioRequest.create_twilio_request( sample_twilio_request )
     assert_equal db_count + 1, TwilioRequest.find_all.count
   end
 
