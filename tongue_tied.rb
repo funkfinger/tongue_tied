@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'sinatra/base'
 require 'twilio-ruby'
 require 'haml'
+require 'lib/text_message'
 require 'lib/models'
 
 
@@ -134,7 +135,7 @@ class TongueTiedApp < Sinatra::Base
       :text => params['Text']
     )
     return false unless pr.save
-    return create_text_message({
+    return TextMessage.create_text_message({
       :body => pr[:text],
       :number => pr[:from]
     })
@@ -143,17 +144,12 @@ class TongueTiedApp < Sinatra::Base
   def process_twilio_request(params)
     tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
     return false unless tr.save
-    return create_text_message({
+    return TextMessage.create_text_message({
       :body => tr[:Body],
       :number => tr[:From]
     })
   end  
   
-  def create_text_message(message)
-    tm = TextMessage.new(message)
-    return tm.save
-  end
-
   def post_to_betwext(num, list)
     uri = URI('http://broadcast.betwext.com/subscribers/create_subscriber')
     req = Net::HTTP::Post.new(uri.path)
