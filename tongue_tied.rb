@@ -6,6 +6,7 @@ require 'twilio-ruby'
 require 'haml'
 
 require_relative 'lib/models/init'
+require_relative 'lib/routes/init'
 
 
 class TongueTiedApp < Sinatra::Base
@@ -18,21 +19,6 @@ class TongueTiedApp < Sinatra::Base
     haml :test_form
   end
 
-  get '/api/plivo/sms/list' do
-    @plivo_list = PlivoRequest.all(:limit => 100)
-    haml :plivo_list
-  end
-
-  post '/api/plivo/sms' do
-    halt 500, 'API error - failed to save' unless PlivoRequest.create_plivo_request(params)
-    content_type 'text/xml'
-    PlivoRequest.response_xml("created", params['From'], params['To'])
-  end
-  
-  get '/twilio/list' do
-    @sms_list = TwilioRequest.all(:limit => 100)
-    haml :twilio_list
-  end
   
   get '/api/sms' do
     xml = Builder::XmlMarkup.new(:indent => 2)
@@ -41,15 +27,6 @@ class TongueTiedApp < Sinatra::Base
     xml.target!
   end
   
-  post '/api/twilio/sms' do
-    content_type 'text/xml', :charset => 'utf-8'
-    halt(500, 'API error - missing SID') if params['SmsSid'].nil?
-    if TwilioRequest.create_twilio_request(params)
-      TwilioRequest.response_xml("created")
-    else
-      halt 500, 'API error - unable to save'
-    end 
-  end
 
   post '/api/betwext/sms' do
     halt(500, 'API error - no params') if params.nil?
@@ -126,19 +103,5 @@ end
 
 
 
-class Hash
-  def slice(*keys)
-    keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
-    keys.each_with_object(self.class.new) { |k, hash| hash[k] = self[k] if has_key?(k) }
-  end
-  
-  def slice!(*keys)
-    keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
-    omit = slice(*self.keys - keys)
-    hash = slice(*keys)
-    replace(hash)
-    omit
-  end
-end
 
 
