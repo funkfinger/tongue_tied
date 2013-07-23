@@ -4,8 +4,8 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'sinatra/base'
 require 'twilio-ruby'
 require 'haml'
-require 'lib/text_message'
-require 'lib/models'
+
+require_relative 'lib/models/init'
 
 
 class TongueTiedApp < Sinatra::Base
@@ -24,9 +24,9 @@ class TongueTiedApp < Sinatra::Base
   end
 
   post '/api/plivo/sms' do
-    halt 500, 'API error - failed to save' unless process_plivo_request(params)
+    halt 500, 'API error - failed to save' unless PlivoRequest.create_plivo_request(params)
     content_type 'text/xml'
-    plivo_response_xml("created", params['From'], params['To'])
+    PlivoRequest.response_xml("created", params['From'], params['To'])
   end
   
   get '/twilio/list' do
@@ -110,13 +110,6 @@ class TongueTiedApp < Sinatra::Base
     params
   end
   
-  def plivo_response_xml(message = "response", to, from)
-    response_xml = ''
-    xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
-    xml.instruct!
-    xml.Response{|r| r.Message({:src => from, :dst => to}, message)}
-    response_xml    
-  end
   
   def twilio_response_xml(message = "response")
     response_xml = ''
@@ -125,22 +118,7 @@ class TongueTiedApp < Sinatra::Base
     xml.Response{|r| r.Sms message }
     response_xml
   end
-  
-  def process_plivo_request(params)
-    pr = PlivoRequest.new(
-      :raw => params.to_s,
-      :plivo_message_id => params['MessageUUID'],
-      :to => params['To'],
-      :from => params['From'],
-      :text => params['Text']
-    )
-    return false unless pr.save
-    return TextMessage.create_text_message({
-      :body => pr[:text],
-      :number => pr[:from]
-    })
-  end
-  
+    
   def process_twilio_request(params)
     tr = TwilioRequest.new(limit_twilio_params(params).merge({ :raw => params.to_s }))
     return false unless tr.save

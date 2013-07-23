@@ -1,8 +1,3 @@
-require 'data_mapper'
-
-db_connection_string = "postgres://#{ENV['DB_USER']}:#{ENV['DB_PASS']}@#{ENV['DB_HOST']}/#{ENV['DB_NAME']}"
-DataMapper.setup(:default, db_connection_string)
-
 class TextMessage
   include DataMapper::Resource
   property :id, Serial
@@ -42,7 +37,7 @@ class TextMessage
   end
 
   def self.create_text_message(message)
-    tm = TextMessage.new(message)
+    tm = self.new(message)
     return tm.save
   end
 
