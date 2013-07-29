@@ -19,10 +19,6 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
-  def test_fails_on_pure_whitespace_message
-    refute TextMessage.new(sample_text_message({"body" => " "})).save
-    refute TextMessage.new(sample_text_message({"body" => " \n "})).save
-  end
 
   def test_subscriber_is_reactivated_if_new_message_is_received
     t = tm
@@ -48,10 +44,6 @@ class TongueTied < TongueTiedTests
     assert_equal params["number"], t.subscriber.number
   end
 
-  def test_text_message_is_required
-    refute TextMessage.new({:body => "test"}).save
-  end
-
   def test_text_message_has_number
     t = tm({"number" => "123456789"})
     assert_equal "123456789", t["number"]
@@ -62,15 +54,6 @@ class TongueTied < TongueTiedTests
     tm
     assert_equal count + 1, Subscriber.count
     assert_equal tm.subscriber.number, tm.number
-  end
-
-  def test_text_message_can_not_be_more_than_160_chars
-    str = ("A" * 161)
-    t = TextMessage.new(sample_text_message({"body" => str}))
-    refute t.save
-    str = ("B" * 160)
-    t = TextMessage.new(sample_text_message({"body" => str}))
-    assert t.save
   end
 
   def test_text_message_has_creation_date_and_is_a_date

@@ -4,6 +4,7 @@ ENV['DB_NAME']='tongue_tied_test'
 require 'minitest/autorun'
 require 'rack/test'
 require 'fakeweb'
+require 'machinist-dm'
 
 require File.expand_path '../../tongue_tied.rb', __FILE__
 

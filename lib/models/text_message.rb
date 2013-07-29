@@ -3,24 +3,32 @@ class TextMessage
   property :id, Serial
   property :body, String, :required => true, :length => 160
   # property :keyword, String, :length => 160
-  property :number, String, :required => true
+  property :from, String, :required => true
+  property :to, String, :required => true
   timestamps :at
 
-  before :save, :make_keyword
-  before :save, :create_subscriber
-  before :save, :process_system_keywords
+  # before :save, :make_keyword
+  # before :save, :create_subscriber
+  # before :save, :process_system_keywords
+  after :save, :add_to_campaign
 
-  has 1, :subscriber
-  has 1, :keyword
+  # has 1, :subscriber
+  # has 1, :campaign
 
-  def make_keyword
+  def add_to_campaign
+    c = Campaign.first(:keyword => self.possible_keyword)
+    c.subscribers.first_or_create(:number => self.from) unless c.nil?
+  end
+
+  def possible_keyword
     self.body.match(/^\s*(\S*)/)
-    w = Keyword.first({:word => $1.upcase})
-    if w.nil?
-      self.keyword = Keyword.new({:word => $1.upcase})
-    else
-      self.keyword = w
-    end
+    $1.upcase
+    # w = Keyword.first({:word => $1.upcase})
+    # if w.nil?
+    #   self.keyword = Keyword.new({:word => $1.upcase})
+    # else
+    #   self.keyword = w
+    # end
   end
 
   def create_subscriber

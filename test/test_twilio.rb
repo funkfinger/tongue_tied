@@ -33,12 +33,12 @@ class TongueTiedTwilio < TongueTiedTests
 
 ######## test below are in reverse cronological order....
 
-  def test_twilio_text_message_has_keyword_which_is_uppercase
-    text_from_twilio("Body" => ' keyword 1')
-    tm = TextMessage.first(TextMessage.keyword.word => 'KEYWORD')
-    refute tm.nil?, "message should not be nil - #{tm}"
-    assert_equal 'KEYWORD', tm.keyword.word, "keyword should be 'KEYWORD'"
-  end
+  # def test_twilio_text_message_has_keyword_which_is_uppercase
+  #   text_from_twilio("Body" => ' keyword 1')
+  #   tm = TextMessage.first(TextMessage.keyword.word => 'KEYWORD')
+  #   refute tm.nil?, "message should not be nil - #{tm}"
+  #   assert_equal 'KEYWORD', tm.keyword.word, "keyword should be 'KEYWORD'"
+  # end
 
   def test_create_tilio_request_doesnt_break_on_bad_param_passed
     db_count = TextMessage.count

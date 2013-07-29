@@ -37,7 +37,8 @@ class TwilioRequest
     return false unless tr.save
     return TextMessage.create_text_message({
       :body => tr[:Body],
-      :number => tr[:From]
+      :from => tr[:From],
+      :to => tr[:To]
     })
   end  
   

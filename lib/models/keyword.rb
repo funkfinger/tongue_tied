@@ -5,8 +5,8 @@ class Keyword
 
   before :save, :upcase_word
 
-  # belongs_to :campaign
-  belongs_to :text_message
+  # has 1, :campaign
+  belongs_to :campaign
 
   def upcase_word
     self.word.upcase!

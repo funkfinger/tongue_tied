@@ -14,4 +14,6 @@ group :test do
   gem 'rack-test'
   gem 'rr'
   gem "fakeweb", "~> 1.3"
+  gem 'machinist', '>= 2.0.0.beta2'
+  gem 'machinist-dm'
 end
