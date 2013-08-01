@@ -3,10 +3,10 @@ class Subscriber
   property :id, Serial
   property :from_number, String, :required => true
   property :active, Boolean, :default => true
+  timestamps :at
   
   belongs_to :campaign
-  # belongs_to :text_message
-  # has n, :campaigns
+  has n, :subscriber_messages
 
   def deactivate
   	self.active = false

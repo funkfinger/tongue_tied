@@ -25,8 +25,9 @@ class TextMessage
   end
 
   def add_to_campaign
-    c = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
-    c.subscribers.first_or_create(:from_number => self.from_number) unless c.nil?
+    camp_exists = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
+    c = camp_exists.nil? ? Campaign.create(:name => CATCH_ALL_KEYWORD, :keyword => CATCH_ALL_KEYWORD, :to_number => self.to_number) : camp_exists
+    c.subscribers.first_or_create(:from_number => self.from_number)
   end
 
   def possible_keyword

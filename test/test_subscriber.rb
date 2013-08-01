@@ -5,22 +5,20 @@ class TongueTiedSubscriber < TongueTiedTests
 
   def setup
     DataMapper.auto_migrate!
-    @camp = Campaign.first_or_create(:name => "camp name", :keyword => "blah", :to_number => to_number)
+    @to_number = '12223334444'
+    @camp = Campaign.first_or_create(:name => "camp name", :keyword => "blah", :to_number => @to_number)
   end
 
-  # def self.teardown
-  #   Campaign.all.destroy
-  # end
-
-  def to_number
-    '12223334444'
+  def test_subscriber_has_creation_date
+    s = @camp.subscribers.new(:from_number => "222")
+    assert s.save
+    refute s.created_at.nil?
   end
-
 
   def test_text_message_creates_a_subscriber
     count = Subscriber.count
     assert @camp.subscribers.first(:from_number => "1212").nil?
-    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => to_number)
+    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => @to_number)
     t.save
     assert_equal count + 1, Subscriber.count
     refute @camp.subscribers.first(:from_number => "1212").nil?
@@ -62,7 +60,7 @@ class TongueTiedSubscriber < TongueTiedTests
     s = @camp.subscribers.new(:from_number => "2222222222")
     assert @camp.save
     assert s.active, "should be active"
-    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "2222222222", :to_number => to_number))
+    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "2222222222", :to_number => @to_number))
     s.reload
     refute s.active, "should be deactive - #{Subscriber.all.inspect}"
   end

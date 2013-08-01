@@ -10,11 +10,15 @@ require_relative 'betwext'
 require_relative 'keyword'
 require_relative 'subscriber'
 require_relative 'twilio'
+require_relative 'subscriber_message'
 
 
 # DataMapper.auto_migrate!
 DataMapper.finalize
 DataMapper.auto_upgrade!
+
+CATCH_ALL_KEYWORD = "CATCHALLKEYWORD"
+
 
 class Hash
   def slice(*keys)
