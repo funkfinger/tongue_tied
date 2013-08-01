@@ -3,21 +3,30 @@ class TextMessage
   property :id, Serial
   property :body, String, :required => true, :length => 160
   # property :keyword, String, :length => 160
-  property :from, String, :required => true
-  property :to, String, :required => true
+  property :from_number, String, :required => true
+  property :to_number, String, :required => true
   timestamps :at
 
   # before :save, :make_keyword
   # before :save, :create_subscriber
-  # before :save, :process_system_keywords
-  after :save, :add_to_campaign
+  before :save, :add_to_campaign
+  before :save, :activate_subscribers
+  before :save, :process_system_keywords
 
   # has 1, :subscriber
   # has 1, :campaign
 
+  def activate_subscribers
+    subs = Campaign.all(:to_number => self.to_number).each do |camp|
+      camp.subscribers.all(:from_number => self.from_number).update(:active => true)
+      # puts "\n\n camp.subscribers.all(:from_number => self.from_number) = #{camp.subscribers.all(:from_number => self.from_number).inspect} \n\n"
+      camp.save
+    end
+  end
+
   def add_to_campaign
-    c = Campaign.first(:keyword => self.possible_keyword)
-    c.subscribers.first_or_create(:number => self.from) unless c.nil?
+    c = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
+    c.subscribers.first_or_create(:from_number => self.from_number) unless c.nil?
   end
 
   def possible_keyword
@@ -32,15 +41,15 @@ class TextMessage
   end
 
   def create_subscriber
-    sub = Subscriber.first({:number => self.number})
-    self.subscriber = sub.nil? ? Subscriber.new({:number => self.number}) : sub
+    sub = Subscriber.first({:subscriber_number => self.number})
+    self.subscriber = sub.nil? ? Subscriber.new({:subscriber_number => self.number}) : sub
     self.subscriber.active = true
   end
 
   def process_system_keywords
-    case self.keyword.word
-    when /stop/i
-      self.subscriber.active = false
+    case self.possible_keyword
+    when /^stop$/i
+      Subscriber.unsubscribe(self)
     end
   end
 

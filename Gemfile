@@ -16,4 +16,5 @@ group :test do
   gem "fakeweb", "~> 1.3"
   gem 'machinist', '>= 2.0.0.beta2'
   gem 'machinist-dm'
+  gem 'mocha', :require => false
 end

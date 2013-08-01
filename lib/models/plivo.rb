@@ -21,8 +21,8 @@ class PlivoRequest
     return false unless pr.save
     return TextMessage.create_text_message({
       :body => pr[:text],
-      :from => pr[:from],
-      :to => pr[:to]
+      :from_number => pr[:from],
+      :to_number => pr[:to]
     })
   end
 

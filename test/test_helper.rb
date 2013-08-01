@@ -5,6 +5,7 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'fakeweb'
 require 'machinist-dm'
+require 'mocha/setup'
 
 require File.expand_path '../../tongue_tied.rb', __FILE__
 
@@ -15,6 +16,7 @@ def app
 end
 
 class TongueTiedTests < MiniTest::Unit::TestCase
+	include Rack::Test::Methods
   def setup
     DataMapper.auto_migrate!
   end

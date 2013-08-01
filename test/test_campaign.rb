@@ -13,13 +13,13 @@ class TongueTiedCampaign < TongueTiedTests
   # end
 
   def test_campaign_has_keyword
-    c = Campaign.new(:name => "Campaign Name", :keyword => "keyword")
+    c = Campaign.new(:name => "Campaign Name", :keyword => "keyword", :to_number => "111")
     assert c.save
     assert_equal "KEYWORD", c.keyword
   end
 
   def test_campaign_exists
-    c = Campaign.new(:name => "Campaign Name", :keyword => "key")
+    c = Campaign.new(:name => "Campaign Name", :keyword => "key", :to_number => "111")
     assert c.save
   end
 

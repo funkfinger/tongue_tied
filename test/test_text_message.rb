@@ -4,22 +4,32 @@ class TextMessageTest < TongueTiedTests
 
   include Rack::Test::Methods
 
-    def sample_text_message(params = {})
-      def_params={
-        "body" => "message",
-        "to" => "0123456789",
-        "from" => "9876543210"
-      }.merge(params)
-    end
+  def sample_text_message(params = {})
+    def_params={
+      "body" => "message",
+      "to_number" => "0123456789",
+      "from_number" => "9876543210"
+    }.merge(params)
+  end
 
   ######## test below are in reverse cronological order....
 
+  def test_system_keyword_is_first_word_and_not_part_of_longer_word
+    Subscriber.stubs(:unsubscribe).never
+    t = TextMessage.new(:body => "nonstop", :to_number => "1111111111", :from_number => "2222222222")
+    assert t.save
+    t = TextMessage.new(:body => "stop_", :to_number => "1111111111", :from_number => "2222222222")
+    assert t.save
+    t = TextMessage.new(:body => "stopnon", :to_number => "1111111111", :from_number => "2222222222")
+    assert t.save
+  end
+
   def test_text_message_has_to_and_from_numbers
-    t = TextMessage.new(:body => "body", :to => "1111111111", :from => "2222222222")
+    t = TextMessage.new(:body => "body", :to_number => "1111111111", :from_number => "2222222222")
     assert t.save, "Failed to save - #{t.inspect}"
-    t = TextMessage.new(:body => "body", :from => "2222222222")
+    t = TextMessage.new(:body => "body", :from_number => "2222222222")
     refute t.save, "Should fail, to field missing"
-    t = TextMessage.new(:body => "body", :to => "2222222222")
+    t = TextMessage.new(:body => "body", :to_number => "2222222222")
     refute t.save, "Should fail, from field missing"
   end
 
