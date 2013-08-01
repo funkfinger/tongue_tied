@@ -52,7 +52,7 @@ class TongueTiedSubscriber < TongueTiedTests
     Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "2222222222", :to_number => "12223334444"))
     s.reload
     refute s.active
-    t = TextMessage.new("body" => "nosop", "from_number" => "2222222222", :to_number => "12223334444")
+    t = TextMessage.new("body" => "nostop", "from_number" => "2222222222", :to_number => "12223334444")
     assert t.save
     s.reload
     assert s.active, "Should be active after non-stop message - #{s.inspect}"

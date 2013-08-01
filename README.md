@@ -66,3 +66,9 @@ Push to Heroku
 
 Since this is an educational project for me, It's worthwhile to mention that there may be a commercial solution for something this already - Google pointed to http://xaffle.com/index.php/ and http://www.estartqatar.com/coupons.php (and others...)...
 
+
+
+LICENSE
+--------------------
+
+This software is released under the Unlicense. See the UNLICENSE file in this repository or http://unlicense.org for details.
