@@ -35,4 +35,8 @@ class PlivoRequest
     response_xml    
   end
 
+# this doesn't work....
+# curl -L -d "src=16023218695&dst=16023218695&text=BLH" https://auth_id:auth_token@api.plivo.com/v1/Message/
+
+
 end
