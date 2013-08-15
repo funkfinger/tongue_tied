@@ -9,6 +9,10 @@ gem 'data_mapper'
 gem 'nokogiri'
 gem 'haml'
 gem 'rake'
+gem 'omniauth'
+gem 'omniauth-twitter'
+# gem 'rack-flash3'
+gem 'sinatra-flash'
 
 group :test do
   gem 'rack-test'
@@ -17,4 +21,5 @@ group :test do
   gem 'machinist', '>= 2.0.0.beta2'
   gem 'machinist-dm'
   gem 'mocha', :require => false
+  gem 'sinatra-sessionography'
 end

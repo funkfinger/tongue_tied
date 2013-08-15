@@ -1,7 +1,5 @@
 class TongueTiedApp < Sinatra::Base
 
-  set :views, Proc.new { File.join(root, "../../views") }
-
   get '/api/plivo/sms/list' do
     @plivo_list = PlivoRequest.all(:limit => 100)
     haml :plivo_list

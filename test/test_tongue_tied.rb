@@ -1,5 +1,12 @@
 require File.expand_path '../test_helper.rb', __FILE__
 
+class TongueTiedApp
+  get "/set_flash_for_test" do 
+    flash[:notice] = params[:flash]
+    "set"
+  end
+end
+
 class TongueTied < TongueTiedTests
   
   def tm(params = {})
@@ -18,7 +25,12 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
-
+  # see monkey patch abovve to set flash val...
+  def test_flash_messages_work
+    get "/set_flash_for_test?flash=should%20show%20on%20page"
+    get "/"
+    assert_match /should show on page/, last_response.body
+  end
 
   def test_text_message_has_number
     t = tm({"to_number" => "123456789"})

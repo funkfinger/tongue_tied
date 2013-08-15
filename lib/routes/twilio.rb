@@ -1,6 +1,4 @@
 class TongueTiedApp < Sinatra::Base
-
-  set :views, Proc.new { File.join(root, "../../views") }
   
   get '/twilio/list' do
     @sms_list = TwilioRequest.all(:limit => 100)

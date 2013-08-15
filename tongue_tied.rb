@@ -4,15 +4,36 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'sinatra/base'
 require 'twilio-ruby'
 require 'haml'
+require 'omniauth'
+require 'omniauth-twitter'
+require 'sinatra/flash'
+# require 'rack-flash'
 
 require_relative 'lib/models/init'
 require_relative 'lib/routes/init'
 
 
 class TongueTiedApp < Sinatra::Base
+
+  enable :sessions
+  # use Rack::Session::Cookie
+  register Sinatra::Flash
+  # use Rack::Flash
+
+  use OmniAuth::Builder do
+    provider :twitter, ENV['TWITTER_OAUTH_CONSUMER_KEY'], ENV['TWITTER_OAUTH_CONSUMER_SECRET']
+  end
   
   get '/' do
-    "Tongue Tied App"
+    <<-HTML
+    <div>#{flash[:notice]}</div>
+    <a href='/auth/twitter'>Sign in with Twitter</a>
+    
+    <form action='/auth/open_id' method='post'>
+      <input type='text' name='identifier'/>
+      <input type='submit' value='Sign in with OpenID'/>
+    </form>
+    HTML
   end
   
   get '/test_form' do
