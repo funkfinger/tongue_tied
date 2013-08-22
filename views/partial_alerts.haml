@@ -1,1 +1,11 @@
-partial_alerts.haml
+.alert.alert-success.alert-dismissable{ :class => flash[:success].nil? ? 'hidden' : ''}
+  %button{:type => 'button', :class => 'close', 'data-dismiss' => 'alert', 'aria-hidden' => 'true'} &times;
+  = flash[:success]
+
+.alert.alert-info.alert-dismissable{ :class => flash[:notice].nil? ? 'hidden' : ''}
+  %button{:type => 'button', :class => 'close', 'data-dismiss' => 'alert', 'aria-hidden' => 'true'} &times;
+  = flash[:notice]
+
+.alert.alert-danger.alert-dismissable{ :class => flash[:error].nil? ? 'hidden' : ''}
+  %button{:type => 'button', :class => 'close', 'data-dismiss' => 'alert', 'aria-hidden' => 'true'} &times;
+  = flash[:error]

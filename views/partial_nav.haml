@@ -1,0 +1,24 @@
+%div{:class => 'navbar navbar-inverse navbar-fixed-top'}
+  .container
+    .navbar-header
+      %button{:type =>"button", :class => "navbar-toggle", 'data-toggle' => "collapse", 'data-target' => ".navbar-collapse"}
+        %span{:class => "icon-bar"}
+        %span{:class => "icon-bar"}
+        %span{:class => "icon-bar"}
+      %a{:class => "navbar-brand", :href => "#"} Tongue Tied Texter
+    %div{:class => 'collapse navbar-collapse'}
+      %ul{:class => 'nav navbar-nav pull-right'}
+        %li{:class => ''}
+          %a{:href => '/auth/twitter'}
+            %span.glyphicon.glyphicon-user
+            Sign-In with Twitter
+        %li{:class => ''}
+          %a{:href => '/auth/facebook'}
+            %span.glyphicon.glyphicon-user
+            Sign-In with Facebook
+    /     %li{:class => 'active'}
+    /       %a{:href => '#'} Home
+    /     %li
+    /       %a{:href => '#about'} About
+    /     %li
+    /       %a{:href => '#contact'} Contact
