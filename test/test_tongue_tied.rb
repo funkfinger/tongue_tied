@@ -25,11 +25,20 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+  def test_rack_serves_static_ico_file
+    get "/favicon.ico"
+    assert last_response.ok?
+  end
+
   # see monkey patch abovve to set flash val...
   def test_flash_messages_work
+    get "/"
+    refute_match /should show on page/, last_response.body
     get "/set_flash_for_test?flash=should%20show%20on%20page"
     get "/"
     assert_match /should show on page/, last_response.body
+    get "/"
+    refute_match /should show on page/, last_response.body
   end
 
   def test_text_message_has_number

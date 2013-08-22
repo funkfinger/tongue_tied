@@ -39,7 +39,8 @@ Things to do:
 - mark number / list member as winner
 - option to select winners that haven't already won
 
-
+### Other
+- figure out DataMapper migrations for situations when model changes break database...
 
 Misc.:
 --------------------

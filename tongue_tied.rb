@@ -15,6 +15,7 @@ require_relative 'lib/routes/init'
 
 class TongueTiedApp < Sinatra::Base
 
+  set :public_folder, 'public'
   enable :sessions
   # use Rack::Session::Cookie
   register Sinatra::Flash
@@ -25,15 +26,11 @@ class TongueTiedApp < Sinatra::Base
   end
   
   get '/' do
-    <<-HTML
-    <div>#{flash[:notice]}</div>
-    <a href='/auth/twitter'>Sign in with Twitter</a>
-    
-    <form action='/auth/open_id' method='post'>
-      <input type='text' name='identifier'/>
-      <input type='submit' value='Sign in with OpenID'/>
-    </form>
-    HTML
+    haml :index
+    # <<-HTML
+    # <div>#{flash[:notice]}</div>
+    # <a href='/auth/twitter'>Sign in with Twitter</a>    
+    # HTML
   end
   
   get '/test_form' do

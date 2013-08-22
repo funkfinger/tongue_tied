@@ -24,3 +24,4 @@ class TongueTiedTests < MiniTest::Unit::TestCase
     DataMapper.auto_migrate!
   end
 end
+

@@ -1,7 +1,11 @@
 class TongueTiedApp < Sinatra::Base
 
   get '/auth/:provider/callback' do
-    "authenticated (for now) - <br /><br /> #{request.env['omniauth.auth']}"
+    halt 500 unless request.env['omniauth.auth']
+    u = User.first_or_create_from_omniauth(request.env['omniauth.auth'])
+    halt 500 unless u
+    flash[:notice] = "signed in - #{u.uid} | User.count = #{User.count}"
+    redirect '/'
   end
 
   get '/auth/failure' do

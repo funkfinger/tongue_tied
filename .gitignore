@@ -2,6 +2,7 @@ config.yml
 #Procfile
 #config.ru
 .env
+.DS_Store
 
 *.gem
 *.rbc
