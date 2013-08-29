@@ -6,6 +6,7 @@ require 'twilio-ruby'
 require 'haml'
 require 'omniauth'
 require 'omniauth-twitter'
+require 'omniauth-facebook'
 require 'sinatra/flash'
 # require 'rack-flash'
 
@@ -23,6 +24,7 @@ class TongueTiedApp < Sinatra::Base
 
   use OmniAuth::Builder do
     provider :twitter, ENV['TWITTER_OAUTH_CONSUMER_KEY'], ENV['TWITTER_OAUTH_CONSUMER_SECRET']
+    provider :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_SECRET']
   end
   
   get '/' do

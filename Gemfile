@@ -11,6 +11,7 @@ gem 'haml'
 gem 'rake'
 gem 'omniauth'
 gem 'omniauth-twitter'
+gem 'omniauth-facebook'
 # gem 'rack-flash3'
 gem 'sinatra-flash'
 
