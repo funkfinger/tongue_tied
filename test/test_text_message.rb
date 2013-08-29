@@ -14,6 +14,23 @@ class TextMessageTest < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_key_exists
+    tm = TextMessage.new(:body => "keystring valuestring", :to_number => "1", :from_number => "999")
+    tm.save
+    assert_equal 'keystring', tm.key
+  end
+
+  def test_value_exists
+    tm = TextMessage.new(:body => "keystring valuestring", :to_number => "1", :from_number => "999")
+    tm.save
+    assert_equal 'valuestring', tm.value
+  end
+
+  def test_system_keyword_activate
+    # TODO: figure out a way to make this test work- probably need to change the way that the system keywords are getting processed...
+    # t = TextMessage.new(:body => "activate", :to_number => "1", :from_number => "2")
+  end
+
   def test_system_keyword_is_first_word_and_not_part_of_longer_word
     Subscriber.stubs(:unsubscribe).never
     t = TextMessage.new(:body => "nonstop", :to_number => "1111111111", :from_number => "2222222222")

@@ -31,14 +31,17 @@ class TextMessage
   end
 
   def possible_keyword
+    key.upcase
+  end
+
+  def key
     self.body.match(/^\s*(\S*)/)
-    $1.upcase
-    # w = Keyword.first({:word => $1.upcase})
-    # if w.nil?
-    #   self.keyword = Keyword.new({:word => $1.upcase})
-    # else
-    #   self.keyword = w
-    # end
+    $1
+  end
+
+  def value
+    self.body.match(/^\s*\S+\s*(\S+)$/)
+    $1
   end
 
   def create_subscriber
@@ -48,9 +51,13 @@ class TextMessage
   end
 
   def process_system_keywords
-    case self.possible_keyword
-    when /^stop$/i
+    case self.key.upcase
+    when 'STOP'
       Subscriber.unsubscribe(self)
+    when 'ACTIVATE'
+      u = User.first(:uid => self.value)
+      u.phone = self.from_number
+      u.activate
     end
   end
 

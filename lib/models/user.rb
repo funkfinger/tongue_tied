@@ -5,6 +5,19 @@ class User
   property :uid, String, :required => true
   property :provider, String, :required => true, :default => "app"
   property :name, String
+  property :active, Boolean, :default => false
+  property :phone, String
+
+  before :save, :activate_with_phone
+
+  def activate
+    self.active = true
+    return self.save
+  end
+
+  def activate_with_phone
+    self.activate if !phone.nil?
+  end
 
   def self.first_or_create_from_provider(uid, provider)
   	u = first_or_create({:uid => uid, :provider => provider})

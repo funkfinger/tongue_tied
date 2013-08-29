@@ -13,6 +13,39 @@ class TongueTiedKeyword < TongueTiedTests
   #   assert_equal 1, User.co
   # end
 
+  def test_can_activate
+    User.create(:uid => 'user_should_activate_with_text_message')
+    u = User.first(:uid => 'user_should_activate_with_text_message')
+    refute u.active
+    u.activate
+    u.reload
+    assert u.active
+  end
+
+  def test_can_activate_phone_with_text
+    User.create(:uid => 'user_should_activate_with_text_message')
+    u = User.first(:uid => 'user_should_activate_with_text_message')
+    refute u.active
+    assert u.phone.nil?
+    TextMessage.create(:body => "activate user_should_activate_with_text_message", :to_number => "1", :from_number => "999")
+    u.reload
+    assert u.active, u.to_yaml
+    assert_equal '999', u.phone
+  end
+
+  def test_adding_phone_activates_user
+    User.create(:uid => "uid_with_phone_number", :phone => '111')
+    u = User.first(:uid => 'uid_with_phone_number')
+    assert u.active, u.to_yaml
+  end
+
+  def test_user_is_only_active_with_phone_number
+    assert_equal 0, User.count
+    User.create(:uid => "uid_without_phone_number")
+    u = User.first(:uid => 'uid_without_phone_number')
+    refute u.active
+  end
+
   def test_user_has_name_field
     u = User.new(:uid => "test_name_field", :name => "test_name")
     assert_equal 'test_name', u.name
