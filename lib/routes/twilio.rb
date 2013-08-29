@@ -1,6 +1,6 @@
 class TongueTiedApp < Sinatra::Base
   
-  get '/twilio/list' do
+  get '/api/twilio/list' do
     @sms_list = TwilioRequest.all(:limit => 100)
     haml :twilio_list
   end

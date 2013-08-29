@@ -4,6 +4,15 @@ class TongueTiedKeyword < TongueTiedTests
 
   include Rack::Test::Methods
 
+  # def test_user_has_required_phone_number
+  #   assert_equal 0, User.count
+  #   u = User.new(:uid => 'new_user_without_phone', :name => 'new user without phone')
+  #   refute u.save
+  #   u = User.new(:uid => 'new_user_without_phone', :name => 'new user without phone' :phone => '111')
+  #   assert u.save
+  #   assert_equal 1, User.co
+  # end
+
   def test_user_has_name_field
     u = User.new(:uid => "test_name_field", :name => "test_name")
     assert_equal 'test_name', u.name

@@ -64,7 +64,7 @@ class TongueTiedTwilio < TongueTiedTests
     r = sample_twilio_request( {:Body => 'found_me'} )
     post '/api/twilio/sms', r
     assert last_response.ok?
-    get '/twilio/list'
+    get '/api/twilio/list'
     assert_match /found\_me/, last_response.body, "Couldn't find me - #{r}"
   end
 
