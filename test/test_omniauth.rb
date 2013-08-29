@@ -12,7 +12,6 @@ class TongueTiedOmniauth < TongueTiedTests
   def test_uid_is_set_in_session
     # refute current_session.session[:uid]
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
-    puts current_session.to_yaml
   end
 
   def test_multiple_sign_ins_doesnt_create_multiple_users
