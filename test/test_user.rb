@@ -13,11 +13,19 @@ class TongueTiedKeyword < TongueTiedTests
   #   assert_equal 1, User.co
   # end
 
+  def test_can_deactivate
+    u = User.first_or_create(:uid => "uid_with_phone_number", :phone => '111')
+    assert u.active, u.to_yaml
+    assert u.deactivate
+    u.reload
+    refute u.active
+  end
+
   def test_can_activate
     User.create(:uid => 'user_should_activate_with_text_message')
     u = User.first(:uid => 'user_should_activate_with_text_message')
     refute u.active
-    u.activate
+    assert u.activate
     u.reload
     assert u.active
   end
@@ -33,7 +41,7 @@ class TongueTiedKeyword < TongueTiedTests
     assert_equal '999', u.phone
   end
 
-  def test_adding_phone_activates_user
+  def test_can_create_with_phone_activates_user
     User.create(:uid => "uid_with_phone_number", :phone => '111')
     u = User.first(:uid => 'uid_with_phone_number')
     assert u.active, u.to_yaml

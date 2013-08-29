@@ -8,7 +8,12 @@ class User
   property :active, Boolean, :default => false
   property :phone, String
 
-  before :save, :activate_with_phone
+  before :create , :activate_with_phone
+
+  def deactivate
+    self.active = false
+    return self.save
+  end
 
   def activate
     self.active = true
