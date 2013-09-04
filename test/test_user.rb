@@ -4,6 +4,32 @@ class TongueTiedKeyword < TongueTiedTests
 
   include Rack::Test::Methods
 
+  def test_user_list_has_link
+    u = User.first_or_create(:uid => "uid_with_phone_number", :phone => '1238234712934', :raw => 'whatever')
+    get "/users"
+    assert last_response.ok?
+    assert_match "/user/#{u.id}", last_response.body
+  end
+
+  def test_user_has_raw_creation_data_if_created_by_provider
+    u = User.first_or_create(:uid => "uid_with_phone_number", :phone => '1238234712934', :raw => 'whatever')
+    assert_equal 'whatever', u.raw
+  end
+
+  def test_can_view_user
+    u = User.first_or_create(:uid => "uid_with_phone_number", :phone => '1238234712934')
+    get "/user/#{u.id}"
+    assert last_response.ok?
+    assert_match u.phone, last_response.body
+  end
+
+  def test_can_view_users_list
+    u = User.first_or_create(:uid => "uid_with_phone_number", :phone => '111')
+    get "/users"
+    assert last_response.ok?
+    assert_match u.uid, last_response.body
+  end
+
   # def test_user_has_required_phone_number
   #   assert_equal 0, User.count
   #   u = User.new(:uid => 'new_user_without_phone', :name => 'new user without phone')

@@ -7,6 +7,7 @@ class User
   property :name, String
   property :active, Boolean, :default => false
   property :phone, String
+  property :raw, Text
 
   before :create , :activate_with_phone
 
@@ -32,6 +33,7 @@ class User
   def self.first_or_create_from_omniauth(auth)
     u = first_or_create({:uid => auth[:uid], :provider => auth[:provider]})
     u.name = auth[:info][:name] unless auth[:info][:name].nil?
+    u.raw = auth.to_yaml
     return u.save ? u : false
   end
   

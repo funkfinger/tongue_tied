@@ -9,6 +9,22 @@ class TongueTiedOmniauth < TongueTiedTests
     @auth = YAML::load(SAMPLE_TWITTER_AUTH)
   end
 
+  def test_user_raw_data_is_updated_each_time_they_log_in
+    get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    get "/user/#{@auth.uid}"
+    assert_match @auth.info.image, last_response.body, "#{@auth.info.image} not found in body"
+    @auth.info.image = "new_image_string_blah_blah"
+    get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    get "/user/#{@auth.uid}"
+    assert_match "new_image_string_blah_blah", last_response.body, "'new_image_string_blah_blah' not found in body"
+  end
+
+  def test_user_contains_raw_omniauth_data
+    get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    get "/user/#{@auth.uid}"
+    assert_match @auth.info.image, last_response.body, "#{@auth.info.image} not found in body"
+  end
+
   def test_uid_is_set_in_session
     # refute current_session.session[:uid]
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}

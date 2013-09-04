@@ -1,0 +1,8 @@
+%h1 users list
+%ul
+  - @users.each do |user|
+    %li
+      %b
+        %a{:href => "/user/#{user.id}"}= user.uid
+        
+/       "#{user.raw}"
