@@ -29,7 +29,7 @@
     .container
       .starter-template
         = haml :partial_alerts
-        %h1= @page_header.nil? ? 'Tongue Tied' : @page_header 
+        / %h1= @page_header.nil? ? 'Tongue Tied' : @page_header 
         = yield
 
     %script{:src => '//code.jquery.com/jquery.js'}
