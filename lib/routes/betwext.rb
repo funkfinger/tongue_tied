@@ -1,5 +1,9 @@
 class TongueTiedApp < Sinatra::Base
 
+  get '/api/betwext/sms' do
+    'not a 404'
+  end
+
   post '/api/betwext/sms' do
     halt(500, 'API error - no params') if params.nil?
     br_exists = BetwextRequest.first(:sender_number => params['sender_number'], :keyword => params['keyword'])

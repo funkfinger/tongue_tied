@@ -4,6 +4,10 @@ class TongueTiedBetwext < TongueTiedTests
 
   include Rack::Test::Methods
 
+  def betwext_url_is_not_a_404
+    get '/api/betwext/sms'
+    assert last_response.ok?
+  end
 
   def sample_betwext_request( params={} )
     def_params = {
