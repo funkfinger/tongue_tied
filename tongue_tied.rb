@@ -12,6 +12,7 @@ require 'sinatra/flash'
 
 require_relative 'lib/models/init'
 require_relative 'lib/routes/init'
+require_relative 'lib/helpers/init'
 
 
 class TongueTiedApp < Sinatra::Base

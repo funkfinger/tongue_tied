@@ -21,6 +21,7 @@ end
 class TongueTiedTests < MiniTest::Unit::TestCase
   include Rack::Test::Methods
   def setup
+    Sinatra::Sessionography.session.clear
     DataMapper.auto_migrate!
   end
 end

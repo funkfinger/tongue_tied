@@ -7,6 +7,19 @@ class TongueTiedOmniauth < TongueTiedTests
   def setup
     DataMapper.auto_migrate!
     @auth = YAML::load(SAMPLE_TWITTER_AUTH)
+    Sinatra::Sessionography.session.clear
+  end
+
+  def test_sign_in_links_only_appears_if_not_signed_in
+    get '/'
+    assert_match /Sign\-In with Twitter/, last_response.body
+    assert_match /Sign\-In with Facebook/, last_response.body
+    get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    get '/'
+    assert_match /logged in as Fake User/, last_response.body
+
+    refute_match /Sign-In with Twitter/, last_response.body
+    refute_match /Sign-In with Facebook/, last_response.body
   end
 
   def test_user_raw_data_is_updated_each_time_they_log_in
@@ -28,6 +41,10 @@ class TongueTiedOmniauth < TongueTiedTests
   def test_uid_is_set_in_session
     # refute current_session.session[:uid]
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    follow_redirect!
+    assert_match /logged in as/, last_response.body
+    get '/users'
+    assert_match /logged in as/, last_response.body
   end
 
   def test_multiple_sign_ins_doesnt_create_multiple_users

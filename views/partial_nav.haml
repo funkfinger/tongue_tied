@@ -8,15 +8,20 @@
       %a{:class => "navbar-brand", :href => "#"} Tongue Tied
     %div{:class => 'collapse navbar-collapse'}
       %ul{:class => 'nav navbar-nav pull-right'}
+        - if signed_in?
+          %li
+            = logout_link
+        - else
+          %li{:class => ''}
+            %a{:href => '/auth/twitter'}
+              %i.icon-twitter
+              Sign-In with Twitter
+          %li{:class => ''}
+            %a{:href => '/auth/facebook'}
+              %i.icon-facebook
+              Sign-In with Facebook
+
         - #if current_user.nil?
-        %li{:class => ''}
-          %a{:href => '/auth/twitter'}
-            %i.icon-twitter
-            Sign-In with Twitter
-        %li{:class => ''}
-          %a{:href => '/auth/facebook'}
-            %i.icon-facebook
-            Sign-In with Facebook
     /     %li{:class => 'active'}
     /       %a{:href => '#'} Home
     /     %li
