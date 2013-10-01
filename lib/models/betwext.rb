@@ -23,4 +23,5 @@ class BetwextKeyword
   include DataMapper::Resource
   property :id, Serial
   property :keyword, String, :required => true
+  timestamps :at
 end

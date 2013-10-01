@@ -27,6 +27,30 @@ class TongueTiedBetwext < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_keyword_has_creation_date
+    b = BetwextKeyword.new(:keyword => 'blah')
+    b.save
+    assert b.created_at
+  end
+
+  def test_keyword_list_is_sorted_by_creation_date_desc
+    create_betwext({ :keyword => 'sort1' })
+    create_betwext({ :keyword => 'sort2' })
+    create_betwext({ :keyword => 'sort3' })
+    create_betwext({ :keyword => 'sort4' })
+    get '/api/betwext/keyword_list'
+    assert_match /sort4.*?sort3.*?sort2.*?sort1/m, last_response.body
+  end
+
+  def test_keyword_list_is_unique
+    create_betwext({ :keyword => 'clickable_key' })
+    create_betwext({ :keyword => 'clickable_key' })
+    create_betwext({ :keyword => 'click_key' })
+    get '/api/betwext/keyword_list'
+    refute_match /clickable\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
+    assert_match /click\_key.*?click\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
+  end
+
   def test_bewext_request_does_not_create_duplicate_number_keyword_pair
     create_betwext({ 'sender_number' => '01234567890', 'keyword' => 'key_word' })
     assert_equal 1, BetwextRequest.count

@@ -14,8 +14,8 @@ require_relative 'subscriber_message'
 require_relative 'user'
 
 
-# DataMapper.auto_migrate!
-DataMapper.finalize
+DataMapper.auto_migrate!
+# DataMapper.finalize
 DataMapper.auto_upgrade!
 
 CATCH_ALL_KEYWORD = "CATCHALLKEYWORD"
