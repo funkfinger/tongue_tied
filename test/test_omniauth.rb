@@ -17,7 +17,6 @@ class TongueTiedOmniauth < TongueTiedTests
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
     get '/'
     assert_match /logged in as Fake User/, last_response.body
-
     refute_match /Sign-In with Twitter/, last_response.body
     refute_match /Sign-In with Facebook/, last_response.body
   end
