@@ -2,26 +2,24 @@ require File.expand_path '../test_helper.rb', __FILE__
 
 class TongueTiedSubscriber < TongueTiedTests
 
-
-  def setup
-    DataMapper.auto_migrate!
-    @to_number = '12223334444'
-    @camp = Campaign.first_or_create(:name => "camp name", :keyword => "blah", :to_number => @to_number)
+  def test_subscriber_has_to_number_which_is_required
+    refute Subscriber.new(:from_number => '111').save
+    assert Subscriber.new(:from_number => '111', :to_number => '222').save
   end
 
   def test_subscriber_has_creation_date
-    s = @camp.subscribers.new(:from_number => "222")
+    s = Subscriber.new(:from_number => '111', :to_number => '222')
     assert s.save
     refute s.created_at.nil?
   end
 
   def test_text_message_creates_a_subscriber
     count = Subscriber.count
-    assert @camp.subscribers.first(:from_number => "1212").nil?
-    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => @to_number)
+    assert Subscriber.first(:from_number => "111", :to_number => '222').nil?
+    t = TextMessage.new("body" => "blah me", "from_number" => '111', :to_number => '222')
     t.save
     assert_equal count + 1, Subscriber.count
-    refute @camp.subscribers.first(:from_number => "1212").nil?
+    refute Subscriber.first(:from_number => "111", :to_number => '222').nil?
   end
 
   def test_new_subscriber_is_not_created_if_already_exists
@@ -38,43 +36,50 @@ class TongueTiedSubscriber < TongueTiedTests
   end
 
   def test_subscriber_is_active_on_new_message
-    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => "12223334444")
+    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => "2121")
     t.save
-    assert @camp.subscribers.first(:from_number => "1212").active
+    assert Subscriber.first(:from_number => "1212", :to_number => '2121').active
   end
 
   def test_new_message_reactivates_subscriber
-    s = @camp.subscribers.new(:from_number => "2222222222")
-    assert @camp.save
+    s = Subscriber.new(:from_number => '111', :to_number => '222')
+    assert s.save
     assert s.active
-    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "2222222222", :to_number => "12223334444"))
+    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "111", :to_number => "222"))
     s.reload
     refute s.active
-    t = TextMessage.new("body" => "nostop", "from_number" => "2222222222", :to_number => "12223334444")
+    t = TextMessage.new("body" => "nostop", "from_number" => "111", :to_number => "222")
     assert t.save
     s.reload
     assert s.active, "Should be active after non-stop message - #{s.inspect}"
   end
 
   def test_can_deactivate
-    s = @camp.subscribers.new(:from_number => "2222222222")
-    assert @camp.save
+    s = Subscriber.new(:from_number => '111', :to_number => '222')
+    assert s.save
     assert s.active, "should be active"
-    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "2222222222", :to_number => @to_number))
+    Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "111", :to_number => '222'))
     s.reload
     refute s.active, "should be deactive - #{Subscriber.all.inspect}"
   end
 
   def test_stop_keyword_deactivates_subscriber_and_is_case_indifferent
-    c = Campaign.new(:name => "camp name", :keyword => "message", :to_number => "9999999999")
-    assert c.save
-    t = TextMessage.new("body" => "message", "from_number" => "18005551212", :to_number => "9999999999")
+    t = TextMessage.new("body" => "message", "from_number" => "111", :to_number => "222")
     assert t.save
-    assert c.subscribers.first(:from_number => "18005551212").active
-    t = TextMessage.new("body" => "stop", "from_number" => "18005551212", :to_number => "9999999999")
+    s = Subscriber.first(:from_number => "111", :to_number => '222')
+    assert s.active
+    t = TextMessage.new("body" => "stop", "from_number" => "111", :to_number => "222")
     assert t.save
-    c.reload
-    refute c.subscribers.first(:from_number => "18005551212").active, "#{c.subscribers.first(:from_number => "18005551212").campaign.inspect}"
+    s.reload
+    refute s.active
+    t = TextMessage.new("body" => "message", "from_number" => "111", :to_number => "222")
+    assert t.save
+    s.reload
+    assert s.active
+    t = TextMessage.new("body" => "StOp", "from_number" => "111", :to_number => "222")
+    assert t.save
+    s.reload
+    refute s.active
   end
 
 end

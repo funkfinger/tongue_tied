@@ -8,8 +8,7 @@ class TextMessage
   timestamps :at
 
   # before :save, :make_keyword
-  # before :save, :create_subscriber
-  before :save, :add_to_campaign
+  before :save, :create_subscriber
   before :save, :activate_subscribers
   before :save, :process_system_keywords
 
@@ -17,17 +16,15 @@ class TextMessage
   # has 1, :campaign
 
   def activate_subscribers
-    subs = Campaign.all(:to_number => self.to_number).each do |camp|
-      camp.subscribers.all(:from_number => self.from_number).update(:active => true)
-      # puts "\n\n camp.subscribers.all(:from_number => self.from_number) = #{camp.subscribers.all(:from_number => self.from_number).inspect} \n\n"
-      camp.save
+    subs = Subscriber.all(:to_number => self.to_number, :from_number => self.from_number).each do |sub|
+      sub.update(:active => true)
     end
   end
 
-  def add_to_campaign
-    camp_exists = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
-    c = camp_exists.nil? ? Campaign.create(:name => CATCH_ALL_KEYWORD, :keyword => CATCH_ALL_KEYWORD, :to_number => self.to_number) : camp_exists
-    c.subscribers.first_or_create(:from_number => self.from_number)
+  def create_subscriber
+    # camp_exists = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
+    # c = camp_exists.nil? ? Campaign.create(:name => CATCH_ALL_KEYWORD, :keyword => CATCH_ALL_KEYWORD, :to_number => self.to_number) : camp_exists
+    Subscriber.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
   end
 
   def possible_keyword
@@ -42,12 +39,6 @@ class TextMessage
   def value
     self.body.match(/^\s*\S+\s*(\S+)$/)
     $1
-  end
-
-  def create_subscriber
-    sub = Subscriber.first({:subscriber_number => self.number})
-    self.subscriber = sub.nil? ? Subscriber.new({:subscriber_number => self.number}) : sub
-    self.subscriber.active = true
   end
 
   def process_system_keywords

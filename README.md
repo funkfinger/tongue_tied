@@ -39,6 +39,16 @@ Things to do:
 - mark number / list member as winner
 - option to select winners that haven't already won
 
+### Trivia
+
+- enrollment in trivia game via text message
+- send question via text to enrolled participants
+- list incoming responses (list only responses to last question)
+- choose winner (manually for now)
+- send text to winner
+- repeat....
+
+
 ### Other
 - figure out DataMapper migrations for situations when model changes break database...
 

@@ -5,7 +5,7 @@ class Campaign
   property :keyword, String, :required => true, :length => 160
   property :to_number, String, :required => true
 
-  has n, :subscribers
+  # has n, :subscribers
     
   before :save, :upcase_keyword
 

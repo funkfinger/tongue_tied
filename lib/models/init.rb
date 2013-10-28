@@ -12,6 +12,7 @@ require_relative 'subscriber'
 require_relative 'twilio'
 require_relative 'subscriber_message'
 require_relative 'user'
+require_relative 'quiz'
 
 
 # DataMapper.auto_migrate!
