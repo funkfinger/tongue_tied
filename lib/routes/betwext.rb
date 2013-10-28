@@ -18,7 +18,7 @@ class TongueTiedApp < Sinatra::Base
       :keyword => params['keyword']
     })
     halt(500, 'API error - can\'t save request') if !br.save
-    keyword = BetwextKeyword.new({ :keyword => params['keyword'] })
+    keyword = BetwextKeyword.first_or_create({ :keyword => params['keyword'] })
     halt(500, 'API error - can\'t save keyword') if !keyword.save
     'created'
   end
@@ -30,7 +30,8 @@ class TongueTiedApp < Sinatra::Base
   
   get '/api/betwext/keyword_list' do
     # @betwext_keyword_list = BetwextKeyword.all(:limit => 100, :unique => true)
-    @betwext_keyword_list = BetwextKeyword.all(:fields => [:keyword], :limit => 100, :unique => true, :order => [:id.desc])
+    @betwext_keyword_list = BetwextKeyword.all(:fields => [:id, :keyword], :limit => 1000, :unique => true, :order => [:id.desc])
+    @betwext_keyword_list = BetwextKeyword.all(:limit => 1000, :order => [:id.desc])
     haml :betwext_keyword_list
   end
   
