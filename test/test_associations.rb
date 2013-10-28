@@ -21,20 +21,4 @@ class AssociationsTest < TongueTiedTests
     refute s.save, "Failed to save - #{s.inspect}"
   end
   
-  # def test_subscriber_belongs_to_campaign
-  #   c = Campaign.new(:keyword => "newkey", :name => "name", :to_number => "1")
-  #   c.subscribers.new(:from_number => "012345678")
-  #   assert c.save, "Failed to save - #{c.inspect}"
-  # end
-  
-  # def test_subscriber_is_created_if_campaign_exists_on_text_message_creation
-  #   c = Campaign.new(:keyword => "newkey", :name => "name", :to_number => "987654321")
-  #   assert c.save
-  #   assert_equal 0, c.subscribers.count
-  #   tm = TextMessage.new(:body => "newkey", :from_number => "123456789", :to_number => "987654321")
-  #   assert tm.save
-  #   assert_equal 1, c.subscribers.count
-  #   assert c.subscribers.first(:from_number => "123456789")
-  # end
-
 end
