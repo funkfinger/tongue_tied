@@ -10,7 +10,7 @@ end
 class TongueTied < TongueTiedTests
   
   def tm(params = {})
-    t = TextMessage.new(sample_text_message(params))
+    t = @t.text_messages.new(sample_text_message(params))
     assert t.save, "failed basic save - #{t.body}"
     return t
   end

@@ -2,18 +2,14 @@ class TextMessage
   include DataMapper::Resource
   property :id, Serial
   property :body, String, :required => true, :length => 160
-  # property :keyword, String, :length => 160
   property :from_number, String, :required => true
   property :to_number, String, :required => true
   timestamps :at
 
-  # before :save, :make_keyword
-  before :save, :create_subscriber
-  before :save, :activate_subscribers
-  before :save, :process_system_keywords
+  belongs_to :telephony_account
 
-  # has 1, :subscriber
-  # has 1, :campaign
+  before :save, :create_and_activate_subscriber
+  before :save, :process_system_keywords
 
   def activate_subscribers
     subs = Subscriber.all(:to_number => self.to_number, :from_number => self.from_number).each do |sub|
@@ -21,10 +17,9 @@ class TextMessage
     end
   end
 
-  def create_subscriber
-    # camp_exists = Campaign.first(:keyword => self.possible_keyword, :to_number => self.to_number)
-    # c = camp_exists.nil? ? Campaign.create(:name => CATCH_ALL_KEYWORD, :keyword => CATCH_ALL_KEYWORD, :to_number => self.to_number) : camp_exists
-    Subscriber.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
+  def create_and_activate_subscriber
+    s = Subscriber.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
+    s.update(:active => true)
   end
 
   def possible_keyword
@@ -53,8 +48,10 @@ class TextMessage
   end
 
   def self.create_text_message(message)
-    tm = self.new(message)
-    return tm.save
+    ta = TelephonyAccount.first(:number => message[:to_number].gsub(/[^\d]/, '')) # strip all but digits...
+    return false if ta.nil?
+    tm = ta.text_messages.new(message)
+    return ta.save
   end
 
 end

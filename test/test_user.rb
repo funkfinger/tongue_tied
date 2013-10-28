@@ -61,7 +61,7 @@ class TongueTiedKeyword < TongueTiedTests
     u = User.first(:uid => 'user_should_activate_with_text_message')
     refute u.active
     assert u.phone.nil?
-    TextMessage.create(:body => "activate user_should_activate_with_text_message", :to_number => "1", :from_number => "999")
+    @t.text_messages.create(:body => "activate user_should_activate_with_text_message", :to_number => "1", :from_number => "999")
     u.reload
     assert u.active, u.to_yaml
     assert_equal '999', u.phone

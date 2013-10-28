@@ -7,7 +7,7 @@ class TongueTiedPlivo < TongueTiedTests
   def sample_plivo_params( params = {} )
     def_params = {
       "MessageUUID" => "message_uuid",
-      "To" => "18006661212",
+      "To" => "1",
       "From" => "18005551212",
       "Text" => "sample text"
     }.merge( params )
@@ -36,7 +36,7 @@ class TongueTiedPlivo < TongueTiedTests
   end
   
   def test_plivo_responds_with_xml
-    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"18006661212\" dst=\"18005551212\">created</Message>\n</Response>\n"
+    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"1\" dst=\"18005551212\">created</Message>\n</Response>\n"
     create_plivo
     assert_equal expected_xml, last_response.body, "XML not correct"
   end
@@ -44,13 +44,13 @@ class TongueTiedPlivo < TongueTiedTests
   def test_plivo_has_the_right_fields
     create_plivo({
       "MessageUUID" => "12345",
-      "To" => "12223334444",
+      "To" => "1",
       "From" => "23334445555",
       "Text" => 'this is some text find me and more text'
     })
     pr = PlivoRequest.first
     assert_equal pr.plivo_message_id, "12345"
-    assert_equal pr.to, "12223334444"
+    assert_equal pr.to, "1"
     assert_equal pr.from, "23334445555"
     assert_match /find me/, pr.text 
   end

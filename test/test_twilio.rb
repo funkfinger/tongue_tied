@@ -4,6 +4,11 @@ class TongueTiedTwilio < TongueTiedTests
 
   include Rack::Test::Methods
 
+  def setup
+    DataMapper.auto_migrate!
+    assert TelephonyAccount.new(:number => '123', :provider => 'test_provider').save
+  end
+
   def sample_twilio_request( params={} )
     def_params={
       "AccountSid"=>"AC50c36451e9ccffe77249b8ca05936b1a", 
@@ -13,7 +18,7 @@ class TongueTiedTwilio < TongueTiedTests
       "ToCity"=>"PHOENIX", 
       "SmsSid"=>"SM44fdf7b79d6d815d70d45df902607d6e", 
       "ToState"=>"AZ", 
-      "To"=>"+16024599557", 
+      "To"=>"+123", 
       "ToCountry"=>"US", 
       "FromCountry"=>"US", 
       "SmsMessageSid"=>"SM44fdf7b79d6d815d70d45df902607d6e", 

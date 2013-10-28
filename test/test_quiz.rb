@@ -4,6 +4,10 @@ class TongueTiedQuizTest < TongueTiedTests
 
   include Rack::Test::Methods
 
+  # def setup
+  #   DataMapper.auto_migrate!
+  #   @t = TelephonyAccount.new(:number => '1', :provider => 'test_provider')
+  # end
 
   ######## test below are in reverse cronological order....
   
@@ -16,7 +20,7 @@ class TongueTiedQuizTest < TongueTiedTests
   end
 
   def test_quiz_can_have_questions
-    q = Quiz.new(:name => 'first quiz')
+    q = @t.quizzes.new(:name => 'first quiz')
     assert_equal 0, q.quiz_questions.count
     q.quiz_questions.new(:body => 'first question')
     assert q.save
@@ -24,12 +28,12 @@ class TongueTiedQuizTest < TongueTiedTests
   end
 
   def test_quiz_name_is_required
-    q = Quiz.new()
+    q = @t.quizzes.new()
     refute q.save
   end
 
   def test_quiz_model_exists
-    q = Quiz.new(:name => 'first quiz')
+    q = @t.quizzes.new(:name => 'first quiz')
     assert q.save
   end
 

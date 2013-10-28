@@ -7,7 +7,7 @@ class AssociationsTest < TongueTiedTests
   ######## test below are in reverse cronological order....
 
   def test_text_message_creation
-    tm = TextMessage.new(:body => "test", :from_number => "123456789", :to_number => "987654321")
+    tm = @t.text_messages.new(:body => "test", :from_number => "123456789", :to_number => "987654321")
     assert tm.save, "Failed to save - #{tm.inspect}"
   end
   

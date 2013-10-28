@@ -16,7 +16,7 @@ class TongueTiedSubscriber < TongueTiedTests
   def test_text_message_creates_a_subscriber
     count = Subscriber.count
     assert Subscriber.first(:from_number => "111", :to_number => '222').nil?
-    t = TextMessage.new("body" => "blah me", "from_number" => '111', :to_number => '222')
+    t = @t.text_messages.new("body" => "blah me", "from_number" => '111', :to_number => '222')
     t.save
     assert_equal count + 1, Subscriber.count
     refute Subscriber.first(:from_number => "111", :to_number => '222').nil?
@@ -24,11 +24,11 @@ class TongueTiedSubscriber < TongueTiedTests
 
   def test_new_subscriber_is_not_created_if_already_exists
     params = {"to_number" => "12223334444", "body" => "blah", "from_number" => "222"}
-    t = TextMessage.new(params)
+    t = @t.text_messages.new(params)
     t.save
     assert_equal 1, TextMessage.count, "number of text messages is incorrect"
     assert_equal 1, Subscriber.count
-    t = TextMessage.new(params)
+    t = @t.text_messages.new(params)
     t.save
     assert_equal 2, TextMessage.count
     assert_equal 1, Subscriber.count
@@ -36,7 +36,7 @@ class TongueTiedSubscriber < TongueTiedTests
   end
 
   def test_subscriber_is_active_on_new_message
-    t = TextMessage.new("body" => "blah me", "from_number" => "1212", :to_number => "2121")
+    t = @t.text_messages.new("body" => "blah me", "from_number" => "1212", :to_number => "2121")
     t.save
     assert Subscriber.first(:from_number => "1212", :to_number => '2121').active
   end
@@ -48,7 +48,7 @@ class TongueTiedSubscriber < TongueTiedTests
     Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "111", :to_number => "222"))
     s.reload
     refute s.active
-    t = TextMessage.new("body" => "nostop", "from_number" => "111", :to_number => "222")
+    t = @t.text_messages.new("body" => "nostop", "from_number" => "111", :to_number => "222")
     assert t.save
     s.reload
     assert s.active, "Should be active after non-stop message - #{s.inspect}"
@@ -64,19 +64,19 @@ class TongueTiedSubscriber < TongueTiedTests
   end
 
   def test_stop_keyword_deactivates_subscriber_and_is_case_indifferent
-    t = TextMessage.new("body" => "message", "from_number" => "111", :to_number => "222")
+    t = @t.text_messages.new("body" => "message", "from_number" => "111", :to_number => "222")
     assert t.save
     s = Subscriber.first(:from_number => "111", :to_number => '222')
     assert s.active
-    t = TextMessage.new("body" => "stop", "from_number" => "111", :to_number => "222")
+    t = @t.text_messages.new("body" => "stop", "from_number" => "111", :to_number => "222")
     assert t.save
     s.reload
     refute s.active
-    t = TextMessage.new("body" => "message", "from_number" => "111", :to_number => "222")
+    t = @t.text_messages.new("body" => "message", "from_number" => "111", :to_number => "222")
     assert t.save
     s.reload
     assert s.active
-    t = TextMessage.new("body" => "StOp", "from_number" => "111", :to_number => "222")
+    t = @t.text_messages.new("body" => "StOp", "from_number" => "111", :to_number => "222")
     assert t.save
     s.reload
     refute s.active

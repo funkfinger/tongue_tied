@@ -23,6 +23,8 @@ class TongueTiedTests < MiniTest::Unit::TestCase
   def setup
     Sinatra::Sessionography.session.clear
     DataMapper.auto_migrate!
+    @t = TelephonyAccount.new(:number => '1', :provider => 'test_provider')
+    @t.save
   end
 end
 
