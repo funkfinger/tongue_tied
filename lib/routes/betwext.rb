@@ -30,7 +30,7 @@ class TongueTiedApp < Sinatra::Base
   
   get '/api/betwext/keyword_list' do
     # @betwext_keyword_list = BetwextKeyword.all(:limit => 100, :unique => true)
-    @betwext_keyword_list = BetwextKeyword.all(:limit => 100, :unique => true, :order => [:id.desc])
+    @betwext_keyword_list = BetwextKeyword.all(:fields => [:keyword], :limit => 100, :unique => true, :order => [:id.desc])
     haml :betwext_keyword_list
   end
   

@@ -43,9 +43,17 @@ class TongueTiedBetwext < TongueTiedTests
   end
 
   def test_keyword_list_is_unique
-    create_betwext({ :keyword => 'clickable_key' })
-    create_betwext({ :keyword => 'clickable_key' })
-    create_betwext({ :keyword => 'click_key' })
+    a = create_betwext({ :keyword => 'clickable_key' })
+    a.created_at = DateTime.now - 1
+    a.save
+    b = create_betwext({ :keyword => 'clickable_key' })
+    b.created_at = DateTime.now - 2
+    b.save
+    c = create_betwext({ :keyword => 'click_key' })
+    c.created_at = DateTime.now - 2
+    c.save
+    # create_betwext({ :keyword => 'clickable_key' })
+    # create_betwext({ :keyword => 'click_key' })
     get '/api/betwext/keyword_list'
     refute_match /clickable\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
     assert_match /click\_key.*?click\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
