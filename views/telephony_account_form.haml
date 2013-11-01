@@ -1,0 +1,14 @@
+%form.form-horizontal{ :role => 'form', :action => '/api/telephony_account/create', :method => 'post' }
+  .form-group
+    %label.control-label.col-sm-2{ :for => 'number'} Number
+    .col-sm-10
+      %input{ :id => 'number', :type => 'text', :name => 'number', :placeholder => 'phone number'}
+  .form-group
+    %label.control-label.col-sm-2{ :for => 'provider'} Provider
+    .col-sm-10
+      %select.form_control{ :id => 'provider', :name => 'provider'}
+        %option{ :selected => 'selected', :value => 'plivo'} Plivo
+        %option{ :value => 'plivo'} Twilio
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      %button.btn{ :type => 'submit', :value => 'Submit'} Submit

@@ -5,7 +5,7 @@ class TongueTiedTwilio < TongueTiedTests
   include Rack::Test::Methods
 
   def setup
-    DataMapper.auto_migrate!
+    super
     assert TelephonyAccount.new(:number => '123', :provider => 'test_provider').save
   end
 

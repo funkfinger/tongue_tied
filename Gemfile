@@ -14,6 +14,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-facebook'
 # gem 'rack-flash3'
 gem 'sinatra-flash'
+gem 'plivo'
 
 group :test do
   gem 'rack-test'

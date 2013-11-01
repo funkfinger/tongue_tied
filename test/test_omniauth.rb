@@ -5,9 +5,8 @@ class TongueTiedOmniauth < TongueTiedTests
   include Rack::Test::Methods
 
   def setup
-    DataMapper.auto_migrate!
+    super
     @auth = YAML::load(SAMPLE_TWITTER_AUTH)
-    Sinatra::Sessionography.session.clear
   end
 
   def test_sign_in_links_only_appears_if_not_signed_in

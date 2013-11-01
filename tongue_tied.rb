@@ -8,6 +8,8 @@ require 'omniauth'
 require 'omniauth-twitter'
 require 'omniauth-facebook'
 require 'sinatra/flash'
+require 'plivo'
+
 # require 'rack-flash'
 
 require_relative 'lib/models/init'

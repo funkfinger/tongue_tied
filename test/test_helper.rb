@@ -5,7 +5,6 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'fakeweb'
 require 'machinist-dm'
-require 'mocha/setup'
 require 'sinatra/sessionography'
 # require 'rack/flash/test'
 
@@ -28,3 +27,4 @@ class TongueTiedTests < MiniTest::Unit::TestCase
   end
 end
 
+require 'mocha/setup'

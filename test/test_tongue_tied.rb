@@ -25,6 +25,41 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+  def test_plivo_sms_send_message_responds_with_false_on_error
+    res = [400, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"message(s) queued", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
+    Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)
+    sms = Sms.create('plivo')
+    refute sms.send_message('1', '2', 'text')
+  end
+
+  def test_plivo_sms_sends_message
+    res = [202, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"blah", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
+    Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)
+    sms = Sms.create('plivo')
+    assert sms.send_message('1', '2', 'text')
+  end
+
+  def test_sms_object_raises_error_on_abstract_class
+    sms = Sms.new
+    assert_raises RuntimeError do 
+      sms.send_message('1', '2', 'text')
+    end
+  end
+
+  def test_sms_object_returns_twilio_on_create
+    sms = Sms.create('twilio')
+    assert_equal 'TwilioSms', sms.class.name
+  end
+
+  def test_sms_object_returns_plivo_on_create
+    sms = Sms.create('plivo')
+    assert_equal 'PlivoSms', sms.class.name
+  end
+
+  def test_plivo_helper_exists
+    assert Plivo
+  end
+
   def test_rack_serves_static_ico_file
     get "/favicon.ico"
     assert last_response.ok?
