@@ -4,7 +4,7 @@
     %li
       = sms.sender_number
       - counter = 0
-      - [5660, 5661, 5662, 5663, 5664].each do |list_id|
+      - [6345, 6346, 6347, 6348, 6349].each do |list_id|
         - counter += 1
         - if sms.betwext_winners.first(:betwext_list_id => list_id)
           %strike round #{counter}
