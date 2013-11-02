@@ -1,0 +1,15 @@
+%h1 Telephony Account Detail - #{@telephony_account.number}
+%ul
+  %li 
+    %b Provider:
+    #{@telephony_account.provider}
+%h2 Quizzes:
+%form{ :role => 'form', :action => "/api/telephony_account/#{@telephony_account.id}/quiz/create", :method => 'post' }
+  .xform-group
+    %input{ :id => 'name', :type => 'text', :name => 'name', :placeholder => 'quiz name'}
+    %textarea.form-control{ :id => 'response_message', :name => 'response_message'} Congrats! You've enrolled in the trivia quiz. Quiz questions coming soon!
+    %button.btn{ :type => 'submit', :value => 'Submit'} create quiz
+
+%ul
+  - @telephony_account.quizzes.each do |q|
+    %li #{q.name}

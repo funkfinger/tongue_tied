@@ -25,6 +25,14 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+  def test_plivo_sms_can_send_multiple_messages
+    res = [202, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"blah", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
+    Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)
+    sms = Sms.create('plivo')
+    sms.stubs(:send_message).times(5)
+    sms.send_messages('message', '18005551212', ['1','2','3','4','5'])
+  end
+
   def test_plivo_sms_send_message_responds_with_false_on_error
     res = [400, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"message(s) queued", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
     Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)

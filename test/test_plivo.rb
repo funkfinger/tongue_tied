@@ -29,17 +29,19 @@ class TongueTiedPlivo < TongueTiedTests
   def test_plivo_with_longer_message
     create_plivo({"Text" => "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"})
   end
+
+  # commented out because I think an automatic response isn't the right thing to do at this time...  
+  # def test_plivo_response_xml_has_correct_content_type
+  #   create_plivo
+  #   assert_equal "text/xml;charset=utf-8", last_response.content_type
+  # end
   
-  def test_plivo_response_xml_has_correct_content_type
-    create_plivo
-    assert_equal "text/xml;charset=utf-8", last_response.content_type
-  end
-  
-  def test_plivo_responds_with_xml
-    expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"1\" dst=\"18005551212\">created</Message>\n</Response>\n"
-    create_plivo
-    assert_equal expected_xml, last_response.body, "XML not correct"
-  end
+  # commented out because I think an automatic response isn't the right thing to do at this time...  
+  # def test_plivo_responds_with_xml
+  #   expected_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Message src=\"1\" dst=\"18005551212\">created</Message>\n</Response>\n"
+  #   create_plivo
+  #   assert_equal expected_xml, last_response.body, "XML not correct"
+  # end
   
   def test_plivo_has_the_right_fields
     create_plivo({

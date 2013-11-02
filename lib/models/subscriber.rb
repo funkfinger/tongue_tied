@@ -5,8 +5,11 @@ class Subscriber
   property :to_number, String, :required => true
   property :active, Boolean, :default => true
   timestamps :at
+
+  # TODO - validate_uniqueness_of...
   
   # belongs_to :campaign
+  belongs_to :quiz, :required => false
   has n, :subscriber_messages
 
   def deactivate

@@ -18,8 +18,8 @@ class TextMessage
   end
 
   def create_and_activate_subscriber
-    s = Subscriber.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
-    s.update(:active => true)
+    @s = Subscriber.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
+    @s.update(:active => true)
   end
 
   def possible_keyword
@@ -44,6 +44,9 @@ class TextMessage
       u = User.first(:uid => self.value)
       u.phone = self.from_number
       u.activate
+    when 'QUIZ'
+      q = self.telephony_account.quizzes.first(:active => true)
+      @s.quiz = q
     end
   end
 

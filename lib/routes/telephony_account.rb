@@ -5,6 +5,11 @@ class TongueTiedApp < Sinatra::Base
   #   haml :plivo_list
   # end
 
+  get '/api/telephony_account_detail/:id' do
+    @telephony_account = TelephonyAccount.get(params[:id])
+    haml :telephony_account_detail
+  end
+
   get '/api/telephony_account/list' do
     @telephony_accounts = TelephonyAccount.all
     haml :telephony_account_list

@@ -4,6 +4,52 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
 
   include Rack::Test::Methods
 
+  def create_account
+    t = TelephonyAccount.new(:number => '18889990000', :provider => 'test_provider')
+    assert t.save
+    return t
+  end
+
+
+  def test_telephony_account_detail_page_has_add_quiz_button
+    t = create_account
+    t.quizzes.new(:name => 'sample quiz', :response_message => 'response message')
+    assert t.save
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match "<button class='btn' type='submit' value='Submit'>create quiz</button>", last_response.body    
+  end
+
+  def test_telephony_account_list_page_has_link_to_detail_page
+    t = create_account
+    get '/api/telephony_account/list'
+    assert last_response.ok?
+    assert_match "href='/api/telephony_account_detail/#{t.id}'", last_response.body
+  end
+
+  def test_telephony_account_detail_page_contains_quizzes
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    refute_match /sample quiz/, last_response.body    
+    t.quizzes.new(:name => 'sample quiz', :response_message => 'response message')
+    assert t.save
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match /sample quiz/, last_response.body    
+  end
+
+  def test_telephony_account_detail_page_contains_provider
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match t.provider, last_response.body
+  end
+
+
+  def test_telephony_account_detail_page_exists
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    assert last_response.ok?
+    assert_match t.number, last_response.body
+  end
+
   def test_telephony_create_form_exists
     get '/api/telephony_account/create'
     assert last_response.ok?
@@ -58,7 +104,7 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
   def test_telephony_account_can_have_quiz
     assert_equal 0, Quiz.count
     t = TelephonyAccount.new(:number => '8005551212', :provider => 'test_provider')
-    t.quizzes.new(:name => 'test quiz')
+    t.quizzes.new(:name => 'test quiz', :response_message => 'response message')
     assert t.save
     assert_equal 1, Quiz.count
   end

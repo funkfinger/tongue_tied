@@ -2,4 +2,4 @@
 %ul
   - @telephony_accounts.each do |account|
     %li
-      %a #{account.number}
+      %a{:href => "/api/telephony_account_detail/#{account.id}"} #{account.number}

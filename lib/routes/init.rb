@@ -4,6 +4,7 @@ require_relative 'betwext'
 require_relative 'omniauth'
 require_relative 'user'
 require_relative 'telephony_account'
+require_relative 'quiz'
 
 class TongueTiedApp < Sinatra::Base
 	set :views, Proc.new { File.join(root, "../../views") }
@@ -11,17 +12,25 @@ end
 
 class Sms
   def send_message(from_number, to_number, message)
-    raise 'not implemented - abstract class'
+    raise 'not implemented'
   end
+
+  def send_messages(message, from_number, to_numbers)
+    to_numbers.each do |number|
+      self.send_message(from_number, number, message)
+    end
+  end
+
   def self.create(type)
     case type
     when 'twilio'
-      TwilioSms.new
+      @sms_provider = TwilioSms.new
     when 'plivo'
-      PlivoSms.new
+      @sms_provider = PlivoSms.new
     else
     end
   end
+  @sms_provider
 end
 
 class TwilioSms < Sms
