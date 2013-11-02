@@ -7,7 +7,7 @@ class TongueTiedSubscriberMessageTest < TongueTiedTests
     super
     @to_number = "111"
     @from_number = "222"
-    @sub = Subscriber.first_or_create(:from_number => @from_number, :to_number => @to_number)
+    @sub = @t.subscribers.first_or_create(:from_number => @from_number, :to_number => @to_number)
     assert @sub.save
   end
 

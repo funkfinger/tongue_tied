@@ -10,6 +10,7 @@ class Subscriber
   
   # belongs_to :campaign
   belongs_to :quiz, :required => false
+  belongs_to :telephony_account
   has n, :subscriber_messages
 
   def deactivate

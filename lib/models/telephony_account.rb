@@ -6,4 +6,5 @@ class TelephonyAccount
   timestamps :at
   has n, :quizzes
   has n, :text_messages
+  has n, :subscribers
 end

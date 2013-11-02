@@ -2,13 +2,18 @@ require File.expand_path '../test_helper.rb', __FILE__
 
 class TongueTiedSubscriber < TongueTiedTests
 
+  def test_subscriber_belongs_to_telephony_account
+    assert @t.subscribers.new(:from_number => '111', :to_number => '222').save
+  end
+
+
   def test_subscriber_has_to_number_which_is_required
-    refute Subscriber.new(:from_number => '111').save
-    assert Subscriber.new(:from_number => '111', :to_number => '222').save
+    refute @t.subscribers.new(:from_number => '111').save
+    assert @t.subscribers.new(:from_number => '111', :to_number => '222').save
   end
 
   def test_subscriber_has_creation_date
-    s = Subscriber.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
     assert s.save
     refute s.created_at.nil?
   end
@@ -42,7 +47,7 @@ class TongueTiedSubscriber < TongueTiedTests
   end
 
   def test_new_message_reactivates_subscriber
-    s = Subscriber.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
     assert s.save
     assert s.active
     Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "111", :to_number => "222"))
@@ -55,7 +60,7 @@ class TongueTiedSubscriber < TongueTiedTests
   end
 
   def test_can_deactivate
-    s = Subscriber.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
     assert s.save
     assert s.active, "should be active"
     Subscriber.unsubscribe(TextMessage.new("body" => "doesnt matter", "from_number" => "111", :to_number => '222'))
@@ -66,7 +71,7 @@ class TongueTiedSubscriber < TongueTiedTests
   def test_stop_keyword_deactivates_subscriber_and_is_case_indifferent
     t = @t.text_messages.new("body" => "message", "from_number" => "111", :to_number => "222")
     assert t.save
-    s = Subscriber.first(:from_number => "111", :to_number => '222')
+    s = @t.subscribers.first(:from_number => "111", :to_number => '222')
     assert s.active
     t = @t.text_messages.new("body" => "stop", "from_number" => "111", :to_number => "222")
     assert t.save

@@ -36,15 +36,15 @@ class TongueTiedQuizTest < TongueTiedTests
  
   def test_quiz_can_send_question_to_subscribers
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
-    q.subscribers.new(:from_number => '111', :to_number => '222')
+    q.subscribers << @t.subscribers.new(:from_number => '111', :to_number => '222')
     assert q.save
-
   end
 
   def test_quiz_can_have_subscribers
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
     assert_equal 0, q.subscribers.count
-    q.subscribers.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
+    q.subscribers << s
     assert q.save
     assert_equal 1, q.subscribers.count
   end
