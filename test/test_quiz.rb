@@ -4,10 +4,11 @@ class TongueTiedQuizTest < TongueTiedTests
 
   include Rack::Test::Methods
 
-  # def setup
-  #   DataMapper.auto_migrate!
-  #   @t = TelephonyAccount.new(:number => '1', :provider => 'test_provider')
-  # end
+  def setup
+    res = [202, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"blah", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
+    Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)
+    super
+  end
 
   ######## test below are in reverse cronological order....
   
@@ -33,11 +34,36 @@ class TongueTiedQuizTest < TongueTiedTests
   #   assert_equal 2, @t.quizzes.count
   #   assert_equal 1, @t.quizzes.all(:active => true).count
   # end
- 
+
+  def test_quiz_can_set_active_question
+    q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
+    quest = q.quiz_questions.new(:body => 'first question')
+    assert q.save
+    q.set_active_question(quest)
+    assert_equal q.active_question.body, 'first question'
+  end
+
+  def test_quiz_has_one_active_question
+    q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
+    quest = q.quiz_questions.new(:body => 'first question')
+    q.quiz_questions.new(:body => 'second question')
+    q.quiz_questions.new(:body => 'third question')
+    assert q.save
+    q.set_active_question(quest)
+    assert_equal q.active_question.body, 'first question'
+  end
+
   def test_quiz_can_send_question_to_subscribers
+    @t.provider = 'plivo'
+    @t.save
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
     q.subscribers << @t.subscribers.new(:from_number => '111', :to_number => '222')
+    q.subscribers << @t.subscribers.new(:from_number => '112', :to_number => '222')
+    q.quiz_questions.new(:body => 'first question')
     assert q.save
+    sms = Sms.create('plivo')
+    PlivoSms.any_instance.stubs(:send_message).times(2)
+    q.send_active_question
   end
 
   def test_quiz_can_have_subscribers
