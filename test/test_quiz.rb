@@ -35,6 +35,48 @@ class TongueTiedQuizTest < TongueTiedTests
   #   assert_equal 1, @t.quizzes.all(:active => true).count
   # end
 
+  def test_can_deactivate_quiz_via_web
+    q = @t.quizzes.new(:name => 'inactive quiz', :response_message => 'response message')
+    assert q.save
+    refute q.active
+    @t.activate_quiz(q)
+    assert q.active
+    get "/api/telephony_account/#{@t.id}/quiz/deactivate_quiz/#{q.id}"
+    follow_redirect!
+    assert last_response.ok?, last_response.inspect
+    q = @t.quizzes.get(q.id)
+    refute q.active, q.inspect
+  end
+
+  def test_can_deactivate_quiz
+    q = @t.quizzes.new(:name => 'inactive quiz', :response_message => 'response message')
+    assert q.save
+    refute q.active
+    @t.activate_quiz(q)
+    assert q.active
+    @t.deactivate_quiz(q)
+    refute q.active
+  end
+
+  def test_can_activate_quiz_via_web
+    q = @t.quizzes.new(:name => 'inactive quiz', :response_message => 'response message')
+    q.save
+    refute q.active
+    get "/api/telephony_account/#{@t.id}/quiz/activate_quiz/#{q.id}"
+    follow_redirect!
+    assert last_response.ok?, last_response.inspect
+    q.reload
+    assert q.active
+  end
+
+  def test_can_activate_quiz
+    q = @t.quizzes.new(:name => 'inactive quiz', :response_message => 'response message')
+    assert q.save
+    refute q.active
+    @t.activate_quiz(q)
+    assert q.active
+  end
+
   def test_quiz_can_set_active_question
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
     quest = q.quiz_questions.new(:body => 'first question')

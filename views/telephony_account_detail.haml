@@ -12,4 +12,6 @@
 
 %ul
   - @telephony_account.quizzes.each do |q|
-    %li #{q.name}
+    %li
+      #{q.name} - (active? #{q.active})
+      %a{:href => "/api/telephony_account/#{@telephony_account.id}/quiz/activate_quiz/#{q.id}"}Activate Quiz

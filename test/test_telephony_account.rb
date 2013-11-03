@@ -10,6 +10,15 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
+  def test_telephony_Account_detail_page_has_activate_quiz_link
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    refute_match "activate_quiz", last_response.body    
+    t.quizzes.new(:name => 'sample quiz', :response_message => 'response message')
+    assert t.save
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match "activate_quiz", last_response.body    
+  end
 
   def test_telephony_account_detail_page_has_add_quiz_button
     t = create_account
