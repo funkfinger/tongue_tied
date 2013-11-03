@@ -1,7 +1,7 @@
 class TongueTiedApp < Sinatra::Base
 
   get '/api/plivo/sms/list' do
-    @plivo_list = PlivoRequest.all(:limit => 100)
+    @plivo_list = PlivoRequest.all(:limit => 10000, :order => [:id.desc])
     haml :plivo_list
   end
 
