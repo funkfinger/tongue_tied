@@ -10,13 +10,21 @@ class TelephonyAccount
 
   def activate_quiz(q)
     self.quizzes.update(:active => false)
-    self.quizzes.get(q.id).active = true
+    quiz = self.get_quiz(q.id)
+    quiz.active = true
     return self.save    
   end
 
   def deactivate_quiz(q)
-    self.quizzes.get(q.id).active = false
-    return self.save
+    quiz = self.get_quiz(q.id)
+    quiz.active = false
+    return quiz.save
+  end
+
+  def get_quiz(id)
+    q = self.quizzes.get(id)
+    raise 'quiz does not exist' if q.nil?
+    q
   end
 
 end

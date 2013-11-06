@@ -15,7 +15,9 @@ class TextMessageTest < TongueTiedTests
   ######## test below are in reverse cronological order....
 
   def test_quiz_keyword_adds_subscriber_to_active_quiz
-    q = @t.quizzes.new(:name => 'quiz with participants')
+    q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'blah')
+    assert q.save
+    @t.activate_quiz(q)
     assert_equal 0, q.subscribers.count
     t = @t.text_messages.new("body" => "quiz", "from_number" => "111", :to_number => "222")
     t.save

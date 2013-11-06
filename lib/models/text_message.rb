@@ -46,7 +46,10 @@ class TextMessage
       u.activate
     when 'QUIZ'
       q = self.telephony_account.quizzes.first(:active => true)
-      @s.quiz = q
+      if not q.nil?
+        q.subscribers << @s
+        q.save
+      end  
     end
   end
 

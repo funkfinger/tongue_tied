@@ -7,6 +7,7 @@ require 'fakeweb'
 require 'machinist-dm'
 require 'sinatra/sessionography'
 # require 'rack/flash/test'
+require 'mocha/setup'
 
 require File.expand_path '../../tongue_tied.rb', __FILE__
 
@@ -27,4 +28,25 @@ class TongueTiedTests < MiniTest::Unit::TestCase
   end
 end
 
-require 'mocha/setup'
+class Sms
+  def self.create(type)
+    case type
+    when 'twilio'
+      @sms_provider = TwilioSms.new
+    when 'plivo'
+      @sms_provider = PlivoSms.new
+    when 'test_provider'
+      @sms_provider = TestProviderSms.new
+    else
+    end
+  end
+  @sms_provider
+end
+
+class TestProviderSms
+  def send_message(from_number, to_number, message)
+    true
+  end
+end
+
+

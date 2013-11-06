@@ -10,7 +10,7 @@ class Quiz
   timestamps :at
   has n, :quiz_questions
   belongs_to :telephony_account
-  has n, :subscribers
+  has n, :subscribers, :through => Resource
 
   def set_active_question(question)
     questions = self.quiz_questions.all()
@@ -24,9 +24,13 @@ class Quiz
     self.quiz_questions.first(:active => true)
   end
 
+  def active_subscribers
+    self.subscribers.all(:active => true)
+  end
+
   def send_active_question
     sms = Sms.create(self.telephony_account.provider)
-    self.subscribers.each do |subscriber|
+    self.active_subscribers.each do |subscriber|
       sms.send_message(self.telephony_account.number, subscriber.from_number, self.active_question)
     end
   end
