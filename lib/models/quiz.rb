@@ -44,6 +44,25 @@ class QuizQuestion
   property :active, Boolean, :required => true, :default => false
   timestamps :at
   belongs_to :quiz
+  has n, :quiz_question_responses
+end
+
+class QuizQuestionResponse
+  include DataMapper::Resource
+  property :id, Serial
+  property :body, String, :required => true
+  property :active, Boolean, :required => true, :default => true
+  timestamps :at
+  belongs_to :quiz_question
+  belongs_to :subscriber
+
+  before :create, :deactivate_prior_responses_and_activate_self
+
+  def deactivate_prior_responses_and_activate_self
+    self.quiz_question.quiz_question_responses.all(:subscriber => self.subscriber).update!(:active => false)
+    self.active = true
+  end
+
 end
 
 

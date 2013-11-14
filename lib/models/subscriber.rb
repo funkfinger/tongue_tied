@@ -12,6 +12,7 @@ class Subscriber
   belongs_to :quiz, :required => false
   belongs_to :telephony_account
   has n, :subscriber_messages
+  has n, :quiz_question_responses
 
   def deactivate
   	self.active = false

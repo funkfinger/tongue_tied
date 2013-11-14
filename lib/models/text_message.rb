@@ -10,6 +10,16 @@ class TextMessage
 
   before :save, :create_and_activate_subscriber
   before :save, :process_system_keywords
+  before :save, :process_quiz_response
+
+
+  def process_quiz_response
+    active_quiz_question = self.telephony_account.quizzes(:active => true).quiz_questions(:active => true).first
+    return if active_quiz_question.nil?
+    return if active_quiz_question.quiz.subscribers.get(@s.id).nil?
+    qr = active_quiz_question.quiz_question_responses.new(:body => self.body, :subscriber => @s)
+    qr.save
+  end
 
   def activate_subscribers
     subs = self.telephony_account.subscribers.all(:to_number => self.to_number, :from_number => self.from_number).each do |sub|

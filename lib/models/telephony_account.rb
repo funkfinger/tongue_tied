@@ -9,10 +9,12 @@ class TelephonyAccount
   has n, :subscribers
 
   def activate_quiz(q)
-    self.quizzes.update(:active => false)
+    self.quizzes.each do |quiz|
+      quiz.active = false
+    end
     quiz = self.get_quiz(q.id)
     quiz.active = true
-    return self.save    
+    return self.save
   end
 
   def deactivate_quiz(q)

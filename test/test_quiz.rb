@@ -15,8 +15,66 @@ class TongueTiedQuizTest < TongueTiedTests
   #   super
   # end
 
+  def setup_quiz_with_questions_and_subscribers
+    @q = @t.quizzes.new(:name => 'quiz with participant responses', :response_message => 'response message')
+    assert @t.activate_quiz(@q)
+    @s = @t.subscribers.new(:from_number => '111', :to_number => @t.number)
+    @q.subscribers << @s
+    @quest1 = @q.quiz_questions.new(:body => 'first question')
+    @quest2 = @q.quiz_questions.new(:body => 'second question')
+    assert @q.save
+    @q.set_active_question(@quest1)
+    @q
+  end
+
   ######## test below are in reverse cronological order....
 
+  def test_text_message_creates_quiz_question_response
+    setup_quiz_with_questions_and_subscribers
+    assert @t.text_messages.new(:body => "dumb answer", :from_number => @s.from_number, :to_number => @t.number).save, "@t.number = #{@t.number}, @s.from_number = #{@s.from_number}"
+    assert_equal 1, @quest1.quiz_question_responses.count
+  end
+
+
+  def test_subscriber_can_only_have_one_active_response_to_a_quiz_question
+    setup_quiz_with_questions_and_subscribers
+    @s.quiz_question_responses.new(:body => 'question 1 answer 1', :quiz_question => @quest1).save
+    @s.quiz_question_responses.new(:body => 'question 1 answer 2', :quiz_question => @quest1).save
+    @s.quiz_question_responses.new(:body => 'question 1 answer 3', :quiz_question => @quest1).save
+    @s.quiz_question_responses.new(:body => 'question 2 answer 1', :quiz_question => @quest2).save
+    @s.quiz_question_responses.new(:body => 'question 2 answer 2', :quiz_question => @quest2).save
+    assert_equal 3, @quest1.quiz_question_responses.count
+    assert_equal 1, @quest1.quiz_question_responses.all(:active => true).count
+    assert_equal 2, @quest2.quiz_question_responses.count
+    assert_equal 1, @quest2.quiz_question_responses.all(:active => true).count
+  end
+
+  def test_quiz_subscribers_can_have_quiz_responses
+    q = @t.quizzes.new(:name => 'quiz with participant responses', :response_message => 'response message')
+    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
+    q.subscribers << s
+    quest1 = q.quiz_questions.new(:body => 'first question')
+    quest2 = q.quiz_questions.new(:body => 'second question')
+    assert q.save
+
+    #response to question 1
+    q.set_active_question(quest1)
+    assert_equal 0, s.quiz_question_responses.count()
+    assert_equal 0, quest1.quiz_question_responses.count    
+    s.quiz_question_responses.new(:body => 'question 1 answer 1', :quiz_question => q.active_question).save
+    assert_equal 1, s.quiz_question_responses.count(), "ugh #{q.active_question.inspect}"
+    assert_equal 1, quest1.quiz_question_responses.count    
+
+    #response to question 2
+    q.set_active_question(quest2)
+    assert_equal 1, s.quiz_question_responses.count() # from above
+    assert_equal 0, quest2.quiz_question_responses.count    
+    s.quiz_question_responses.new(:body => 'question 2 answer 1', :quiz_question => q.active_question).save
+    s.quiz_question_responses.new(:body => 'question 2 answer 2', :quiz_question => q.active_question).save
+    s.quiz_question_responses.new(:body => 'question 2 answer 3', :quiz_question => q.active_question).save
+    assert_equal 4, s.quiz_question_responses.count(), "ugh #{q.active_question.inspect}"
+    assert_equal 3, quest2.quiz_question_responses.count    
+  end
 
   def test_quiz_can_send_question_to_only_active_subscribers
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
@@ -25,11 +83,12 @@ class TongueTiedQuizTest < TongueTiedTests
     @t.text_messages.new("body" => "quiz", "from_number" => "111", :to_number => "222").save
     @t.text_messages.new("body" => "quiz", "from_number" => "333", :to_number => "222").save
     @t.text_messages.new("body" => "quiz", "from_number" => "444", :to_number => "222").save
+    @t.text_messages.new("body" => "quiz", "from_number" => "555", :to_number => "222").save
     @t.text_messages.new("body" => "stop", "from_number" => "111", :to_number => "222").save
     @t.text_messages.new("body" => "stop", "from_number" => "333", :to_number => "222").save
     assert q.save
     sms = Sms.create('test_provider')
-    TestProviderSms.any_instance.stubs(:send_message).once
+    TestProviderSms.any_instance.stubs(:send_message).twice
     q.send_active_question
   end
 
