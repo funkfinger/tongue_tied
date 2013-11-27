@@ -1,0 +1,4 @@
+%h1 quiz response list
+%ul
+  - @qq.quiz_question_responses.each do |r|
+    %li "#{r.body}"

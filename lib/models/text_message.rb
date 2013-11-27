@@ -17,8 +17,7 @@ class TextMessage
     active_quiz_question = self.telephony_account.quizzes(:active => true).quiz_questions(:active => true).first
     return if active_quiz_question.nil?
     return if active_quiz_question.quiz.subscribers.get(@s.id).nil?
-    qr = active_quiz_question.quiz_question_responses.new(:body => self.body, :subscriber => @s)
-    qr.save
+    return active_quiz_question.quiz_question_responses.new(:body => self.body, :subscriber => @s).save
   end
 
   def activate_subscribers

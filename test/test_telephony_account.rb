@@ -10,7 +10,37 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
-  def test_telephony_Account_detail_page_has_activate_quiz_link
+  def test_raises_error_if_no_active_quiz
+    t = create_account
+    q1 = t.quizzes.new(:name => 'first quiz', :response_message => 'response message')
+    assert t.save
+    assert_equal 0, t.quizzes.all(:active => true).count
+    assert_raises RuntimeError do 
+      t.get_active_quiz
+    end
+  end
+
+  def test_raises_error_if_more_than_active_quiz
+    t = create_account
+    q1 = t.quizzes.new(:name => 'first quiz', :response_message => 'response message')
+    q2 = t.quizzes.new(:name => 'second quiz', :response_message => 'response message')
+    t.save
+    t.quizzes.update!(:active => true)
+    assert_equal 2, t.quizzes.all(:active => true).count
+    assert_raises RuntimeError do 
+      t.get_active_quiz
+    end
+  end
+
+  def test_can_get_active_quiz
+    t = create_account
+    q = t.quizzes.new(:name => 'first quiz', :response_message => 'response message')
+    q.active = true
+    t.save
+    assert_equal 'first quiz', t.get_active_quiz.name
+  end
+
+  def test_telephony_account_detail_page_has_activate_quiz_link
     t = create_account
     get "/api/telephony_account_detail/#{t.id}"
     refute_match "activate_quiz", last_response.body    

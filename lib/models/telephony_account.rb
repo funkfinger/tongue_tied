@@ -29,4 +29,11 @@ class TelephonyAccount
     q
   end
 
+  def get_active_quiz
+    qzs = self.quizzes.all(:active => true)
+    raise 'more than one quiz active' if qzs.count > 1
+    raise 'no active quiz found' if qzs.empty?
+    qzs.first
+  end
+
 end

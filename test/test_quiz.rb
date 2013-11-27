@@ -29,12 +29,25 @@ class TongueTiedQuizTest < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_responses_to_quiz_question_can_be_seen_via_webpage
+    setup_quiz_with_questions_and_subscribers
+    assert @t.text_messages.new(:body => "answer_on_page_exists", :from_number => @s.from_number, :to_number => @t.number).save, "failed to save"
+    get "/api/telephony_account/#{@t.id}/quiz/#{@q.id}/quiz_question_responses/#{@quest1.id}"
+    assert last_response.ok?, last_response.inspect
+    assert_match "answer_on_page_exists", last_response.body
+  end
+
+  def test_quiz_question_response_page_exists
+    setup_quiz_with_questions_and_subscribers
+    get "/api/telephony_account/#{@t.id}/quiz/#{@q.id}/quiz_question_responses/#{@quest1.id}"
+    assert last_response.ok?, last_response.inspect
+  end
+
   def test_text_message_creates_quiz_question_response
     setup_quiz_with_questions_and_subscribers
     assert @t.text_messages.new(:body => "dumb answer", :from_number => @s.from_number, :to_number => @t.number).save, "@t.number = #{@t.number}, @s.from_number = #{@s.from_number}"
     assert_equal 1, @quest1.quiz_question_responses.count
   end
-
 
   def test_subscriber_can_only_have_one_active_response_to_a_quiz_question
     setup_quiz_with_questions_and_subscribers

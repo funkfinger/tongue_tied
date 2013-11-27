@@ -1,5 +1,16 @@
 class TongueTiedApp < Sinatra::Base
 
+
+  get '/api/telephony_account/:telephony_account_id/quiz/:quiz_id/quiz_question_responses/:question_id' do
+    @ta = TelephonyAccount.get(params[:telephony_account_id])
+    halt 500, 'API error - telephony account does not exist' if @ta.nil?
+    @q = @ta.quizzes.get(params[:quiz_id])
+    halt 500, 'API error - quiz does not exist' if @q.nil?
+    @qq = @q.quiz_questions.get(params[:question_id])
+    halt 500, 'API error - quiz question does not exist' if @qq.nil?
+    haml :quiz_responses
+  end
+
   get '/api/telephony_account/:telephony_account_id/quiz/deactivate_quiz/:quiz_id' do
     ta = TelephonyAccount.get(params[:telephony_account_id])
     halt 500, 'API error - telephony account does not exist' if ta.nil?
