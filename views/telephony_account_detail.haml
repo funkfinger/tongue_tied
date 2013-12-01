@@ -13,5 +13,14 @@
 %ul
   - @telephony_account.quizzes.each do |q|
     %li
-      #{q.name} - (active? #{q.active})
-      %a{:href => "/api/telephony_account/#{@telephony_account.id}/quiz/activate_quiz/#{q.id}"}Activate Quiz
+      - if q.active
+        %a{:href => "/api/quiz_detail/#{q.id}"}
+          %span.glyphicon.glyphicon-eye-open
+        #{q.name}
+        %a{:href => "/api/telephony_account/#{@telephony_account.id}/quiz/deactivate_quiz/#{q.id}"}Deactivate Quiz
+      - else
+        %a{:href => "/api/quiz_detail/#{q.id}"}
+          %span.glyphicon.glyphicon-eye-open
+        %span.strike
+          #{q.name}
+        %a{:href => "/api/telephony_account/#{@telephony_account.id}/quiz/activate_quiz/#{q.id}"} Activate Quiz

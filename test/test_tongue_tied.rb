@@ -25,6 +25,18 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+  def test_layout_has_angular_js
+    get '/'
+    assert last_response.ok?
+    assert_match /angular\.min\.js/, last_response.body
+  end
+
+  def test_layout_has_breadcrumb
+    get '/'
+    assert last_response.ok?
+    assert_match /breadcrumb/, last_response.body
+  end
+
   def test_plivo_sms_can_send_multiple_messages
     res = [202, {"api_id"=>"d056586a-42b7-11e3-9033-12314000c5ac", "message"=>"blah", "message_uuid"=>["d07d25a8-42b7-11e3-8c69-123140019572"]}]
     Plivo::RestAPI.any_instance.stubs(:send_message).returns(res)

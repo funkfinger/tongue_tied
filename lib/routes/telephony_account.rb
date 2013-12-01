@@ -1,10 +1,5 @@
 class TongueTiedApp < Sinatra::Base
 
-  # get '/api/telephony_account/list' do
-  #   @plivo_list = PlivoRequest.all(:limit => 100)
-  #   haml :plivo_list
-  # end
-
   get '/api/telephony_account_detail/:id' do
     @telephony_account = TelephonyAccount.get(params[:id])
     haml :telephony_account_detail
@@ -18,7 +13,6 @@ class TongueTiedApp < Sinatra::Base
   get '/api/telephony_account/create' do
     haml :telephony_account_form
   end
-
 
   post '/api/telephony_account/create' do
     # halt 500, 'API error - missing provider' if params[:provider].empty?

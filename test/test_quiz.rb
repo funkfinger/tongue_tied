@@ -29,6 +29,26 @@ class TongueTiedQuizTest < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_telephony_account_detail_page_has_link_to_quiz_detail_page
+    setup_quiz_with_questions_and_subscribers
+    get "/api/telephony_account_detail/#{@t.id}"
+    assert_match /\/api\/quiz_detail\/#{@q.id}/, last_response.body
+  end
+
+  def test_can_view_quiz_detail_page
+    setup_quiz_with_questions_and_subscribers
+    get "/api/quiz_detail/#{@q.id}"
+    assert last_response.ok?, last_response.body
+    assert_match /quiz with participant responses/, last_response.body
+  end
+
+  def test_deactivate_quiz_link_shows_on_telephony_account_page
+    setup_quiz_with_questions_and_subscribers
+    get "/api/telephony_account_detail/#{@t.id}"
+    assert last_response.ok?, last_response.body
+    assert_match /Deactivate Quiz/, last_response.body, 'deactivate link not found'
+  end
+
   def test_responses_to_quiz_question_can_be_seen_via_webpage
     setup_quiz_with_questions_and_subscribers
     assert @t.text_messages.new(:body => "answer_on_page_exists", :from_number => @s.from_number, :to_number => @t.number).save, "failed to save"

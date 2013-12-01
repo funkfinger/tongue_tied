@@ -26,6 +26,14 @@
 
     = haml :partial_nav
 
+    %ol.breadcrumb
+      %li
+        %a{:href => '#'}Home
+      %li
+        %a{:href => '#'}Stuff
+      %li
+        %a.active{:href => '#'}More Stuff
+
     .container
       .starter-template
         = haml :partial_alerts
@@ -35,3 +43,4 @@
     %script{:src => '//code.jquery.com/jquery.js'}
     %script{:src => '/bootstrap/js/bootstrap.min.js'}
 
+    %script{:src => 'http://code.angularjs.org/1.2.3/angular.min.js'}
