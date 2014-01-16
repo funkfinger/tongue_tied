@@ -50,6 +50,7 @@ class TongueTiedApp < Sinatra::Base
   end  
   
   def post_to_betwext(num, list)
+
     uri = URI('http://broadcast.betwext.com/subscribers/create_subscriber')
     req = Net::HTTP::Post.new(uri.path)
     req.set_form_data('number' => num, 'list' => list)
@@ -64,9 +65,13 @@ class TongueTiedApp < Sinatra::Base
     req.add_field 'Accept-Encoding', 'gzip,deflate,sdch'
     req.add_field 'Accept-Language', 'en-US,en;q=0.8'
     req.add_field 'Cookie', ENV['BETWEXT_COOKIE']
-    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-      http.request(req)
+    res = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(req) }
+    redirect = res.header['location'] 
+    if redirect
+      uri = URI(redirect)
+      redirect_res = Net::HTTP.get_response(uri)
     end
+
     return res.code == "302" ? true : false
   end
   

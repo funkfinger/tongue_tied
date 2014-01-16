@@ -43,7 +43,7 @@ class Sms
   @sms_provider
 end
 
-class TestProviderSms
+class TestProviderSms < Sms
   def send_message(from_number, to_number, message)
     true
   end

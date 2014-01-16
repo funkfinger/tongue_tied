@@ -3,6 +3,9 @@
   %li 
     %b Provider:
     #{@telephony_account.provider}
+  %li
+    %a{ :href => "/api/telephony_account/#{@telephony_account.id}/subscribers" }list subscribers
+
 %h2 Quizzes:
 %form{ :role => 'form', :action => "/api/telephony_account/#{@telephony_account.id}/quiz/create", :method => 'post' }
   .xform-group

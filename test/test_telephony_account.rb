@@ -10,6 +10,13 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
+  def test_detail_page_has_list_subscribers_link
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match "list subscribers", last_response.body
+
+  end
+
   def test_raises_error_if_no_active_quiz
     t = create_account
     q1 = t.quizzes.new(:name => 'first quiz', :response_message => 'response message')
