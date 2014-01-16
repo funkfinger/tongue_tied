@@ -2,6 +2,16 @@ require File.expand_path '../test_helper.rb', __FILE__
 
 class TongueTiedSubscriber < TongueTiedTests
 
+  def test_subscriber_has_active_subscribers
+    @t.subscribers.new(:from_number => '1', :to_number => '222', :active => false)
+    @t.subscribers.new(:from_number => '2', :to_number => '222')
+    @t.subscribers.new(:from_number => '3', :to_number => '222')
+    assert @t.save
+    assert_equal 3, @t.subscribers.count
+    assert_equal 2, @t.subscribers.active_subscribers.count
+  end
+
+
   def test_subscriber_belongs_to_telephony_account
     assert @t.subscribers.new(:from_number => '111', :to_number => '222').save
   end

@@ -19,6 +19,10 @@ class Subscriber
   	self.save
   end
 
+  def self.active_subscribers
+    all(:active => true)
+  end
+
   def self.unsubscribe(text_message)
   	Subscriber.all(:from_number => text_message.from_number, :to_number => text_message.to_number).each do |sub| 
   		sub.deactivate

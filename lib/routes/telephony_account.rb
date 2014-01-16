@@ -1,5 +1,12 @@
 class TongueTiedApp < Sinatra::Base
 
+
+  get '/api/telephony_account/:id/subscribers' do
+    @telephony_account = TelephonyAccount.get(params[:id])
+    @telephony_account_subscribers = @telephony_account.subscribers.active_subscribers
+    haml :telephony_account_subscribers
+  end
+
   get '/api/telephony_account_detail/:id' do
     @telephony_account = TelephonyAccount.get(params[:id])
     haml :telephony_account_detail
