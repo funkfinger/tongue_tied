@@ -11,6 +11,13 @@ class TongueTiedSubscriber < TongueTiedTests
     assert_equal 2, @t.subscribers.active_subscribers.count
   end
 
+  def test_subscribers_list_page_exists_and_contains_subscribers
+    @t.subscribers.new(:to_number => @t.number, :from_number => '911')
+    @t.save
+    get "/api/telephony_account/#{@t.id}/subscribers"
+    assert last_response.ok?
+    assert_match "911", last_response.body
+  end
 
   def test_subscriber_belongs_to_telephony_account
     assert @t.subscribers.new(:from_number => '111', :to_number => '222').save

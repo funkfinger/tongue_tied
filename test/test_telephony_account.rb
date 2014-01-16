@@ -10,14 +10,6 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
-  def test_subscribers_list_page_exists_and_contains_subscribers
-    t = create_account
-    t.subscribers.new(:to_number => t.number, :from_number => '911')
-    t.save
-    get "/api/telephony_account/#{t.id}/subscribers"
-    assert last_response.ok?
-    assert_match "911", last_response.body
-  end
 
   def test_detail_page_has_list_subscribers_link
     t = create_account

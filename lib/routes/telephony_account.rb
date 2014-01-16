@@ -1,6 +1,5 @@
 class TongueTiedApp < Sinatra::Base
 
-
   get '/api/telephony_account/:id/subscribers' do
     @telephony_account = TelephonyAccount.get(params[:id])
     @telephony_account_subscribers = @telephony_account.subscribers.active_subscribers
@@ -29,4 +28,5 @@ class TongueTiedApp < Sinatra::Base
     flash[:success] = 'created'
     redirect '/api/telephony_account/list'
   end
+  
 end
