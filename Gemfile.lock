@@ -11,6 +11,8 @@ GEM
     atomic (1.1.10)
     backports (3.3.2)
     bcrypt-ruby (3.0.1)
+    bourne (1.5.0)
+      mocha (>= 0.13.2, < 0.15)
     builder (3.2.2)
     data_mapper (1.2.0)
       dm-aggregates (~> 1.2.0)
@@ -157,6 +159,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bourne
   data_mapper
   dm-postgres-adapter
   fakeweb (~> 1.3)

@@ -25,6 +25,12 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+  def test_blank
+    assert "".blank?
+    assert nil.blank?
+  end
+
+
   def test_layout_has_angular_js
     get '/'
     assert last_response.ok?

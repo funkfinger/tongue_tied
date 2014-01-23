@@ -1,15 +1,16 @@
-# class Keyword
-#   include DataMapper::Resource
-#   property :id, Serial
-#   property :word, String, :required => true, :length => 160
+class Keyword
+  include DataMapper::Resource
+  property :id, Serial
+  property :word, String, :required => true, :length => 160
+  property :response, String, :required => true, :length => 160
 
-#   before :save, :upcase_word
+  before :save, :upcase_word
 
-#   # has 1, :campaign
-#   belongs_to :campaign
+  belongs_to :telephony_account
+  has n, :subscribers, :through => Resource
 
-#   def upcase_word
-#     self.word.upcase!
-#   end
+  def upcase_word
+    self.word.upcase!
+  end
 
-# end
+end

@@ -24,4 +24,5 @@ group :test do
   gem 'machinist-dm'
   gem 'mocha', :require => false
   gem 'sinatra-sessionography'
+  gem 'bourne'
 end

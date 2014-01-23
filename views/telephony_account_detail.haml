@@ -5,6 +5,8 @@
     #{@telephony_account.provider}
   %li
     %a{ :href => "/api/telephony_account/#{@telephony_account.id}/subscribers" }list subscribers
+  %li
+    %a{ :href => "/api/telephony_account/#{@telephony_account.id}/keywords" }list keywords
 
 %h2 Quizzes:
 %form{ :role => 'form', :action => "/api/telephony_account/#{@telephony_account.id}/quiz/create", :method => 'post' }

@@ -8,6 +8,7 @@ require 'machinist-dm'
 require 'sinatra/sessionography'
 # require 'rack/flash/test'
 require 'mocha/setup'
+require 'bourne'
 
 require File.expand_path '../../tongue_tied.rb', __FILE__
 
@@ -45,7 +46,8 @@ end
 
 class TestProviderSms < Sms
   def send_message(from_number, to_number, message)
-    true
+    # puts method(__method__).parameters.inspect
+    # puts local_variables.inspect
   end
 end
 

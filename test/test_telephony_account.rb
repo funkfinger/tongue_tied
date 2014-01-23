@@ -5,9 +5,85 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
   include Rack::Test::Methods
 
   def create_account
-    t = TelephonyAccount.new(:number => '18889990000', :provider => 'test_provider')
+    t = TelephonyAccount.new(:number => '18889990000', :provider => 'test_provider', :response => 'booyeah')
     assert t.save
     return t
+  end
+
+  def test_text_message_to_telephony_account_does_not_sends_generic_text_message_if_response_is_empty
+    TestProviderSms.any_instance.stubs(:send_message).never
+    t = create_account
+    t.response = ""
+    assert t.save
+    t.text_messages.new(:body => "generic", :to_number => t.number, :from_number => "2222222222")
+    assert t.save
+  end
+
+
+  def test_text_message_to_telephony_account_sends_generic_text_message_response
+    TestProviderSms.any_instance.stubs(:send_message).once
+    t = create_account
+    t.text_messages.new(:body => "generic", :to_number => t.number, :from_number => "2222222222")
+    assert t.save
+  end
+
+
+  def test_telephony_account_has_generic_text_message_response
+    t = create_account
+    t.response = "welcome one and all"
+    assert t.save
+  end
+
+  def test_telephony_account_detail_page_has_keywords_list_link
+    t = create_account
+    get "/api/telephony_account_detail/#{t.id}"
+    assert_match "list keywords", last_response.body
+  end
+
+  def test_telephony_account_has_keywords
+    t = create_account
+    count = t.keywords.count
+    t.keywords.new(:word => 'test_keyword', :response => 'response')
+    assert t.save
+    assert_equal count + 1, t.keywords.count
+  end
+
+  def test_add_subscribers_api_redirects_on_success
+    t = create_account
+    post "/api/telephony_account/#{t.id}/subscriber", {:from_number => '111'}
+    follow_redirect!
+    assert last_response.ok?
+    assert_equal "/api/telephony_account/#{t.id}/subscribers", last_request.path
+  end
+
+  def test_add_subscriber_via_api_halts_500_if_bad_telephony_account_id
+    t = create_account
+    post "/api/telephony_account/999/subscriber", {:from_number => '111'}
+    refute last_response.ok?
+  end
+
+  def test_add_subscriber_via_api_halts_500_on_bad_data
+    t = create_account
+    post "/api/telephony_account/#{t.id}/subscriber"
+    refute last_response.ok?
+  end
+
+  def test_add_subscriber_via_api_exists
+    t = create_account
+    post "/api/telephony_account/#{t.id}/subscriber", {:from_number => '111'}
+    follow_redirect!
+    assert last_response.ok?
+  end
+
+
+  def test_can_add_subscriber_via_api
+    t = create_account
+    subscriber_count = t.subscribers.count
+    post "/api/telephony_account/#{t.id}/subscriber", {:from_number => '111'}
+    follow_redirect!
+    assert last_response.ok?
+    t.reload
+    assert_equal subscriber_count + 1, t.subscribers.count
   end
 
 

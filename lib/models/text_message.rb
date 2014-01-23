@@ -8,10 +8,26 @@ class TextMessage
 
   belongs_to :telephony_account
 
+  validates_format_of :body, with: /\S+/i, allow_blank: false, message: "body cannot me blank"
+
   before :save, :create_and_activate_subscriber
   before :save, :process_system_keywords
+  before :save, :send_telephony_account_responses
   before :save, :process_quiz_response
 
+
+  def send_telephony_account_responses
+    keyword = self.telephony_account.keywords.first(:word => self.possible_keyword)
+    sms = Sms.create(self.telephony_account.provider)
+    if !keyword.nil?
+      sms.send_message(self.telephony_account.number, self.from_number, keyword.response)
+    else
+      generic_response_message = self.telephony_account.response
+      sms.send_message(self.telephony_account.number, self.from_number, generic_response_message) unless generic_response_message.blank?
+      # send generic response here...
+    end
+
+  end
 
   def process_quiz_response
     active_quiz_question = self.telephony_account.quizzes(:active => true).quiz_questions(:active => true).first

@@ -3,10 +3,13 @@ class TelephonyAccount
   property :id, Serial
   property :number, String, :required => true
   property :provider, String, :required => true
+  property :response, String, :length => 160
+
   timestamps :at
   has n, :quizzes
   has n, :text_messages
   has n, :subscribers
+  has n, :keywords
 
   def activate_quiz(q)
     self.quizzes.each do |quiz|
