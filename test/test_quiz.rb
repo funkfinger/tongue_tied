@@ -29,6 +29,13 @@ class TongueTiedQuizTest < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_quiz_only_sends_responses_if_quiz_is_active
+    # TestProviderSms.any_instance.stubs(:send_message).never
+    # setup_quiz_with_questions_and_subscribers
+    
+  end
+
+
   def test_telephony_account_detail_page_has_link_to_quiz_detail_page
     setup_quiz_with_questions_and_subscribers
     get "/api/telephony_account_detail/#{@t.id}"
