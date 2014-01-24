@@ -1,11 +1,28 @@
 class TongueTiedApp < Sinatra::Base
 
 
+  put '/api/telephony_account/:id/keyword/:keyword_id' do
+    ta = get_telephony_account(params[:id])
+    kw = ta.keywords.first(params[:id])
+    halt 500, 'API error - keyword does not exist' if kw.nil?
+    kw.word = params[:word]
+    kw.response = params[:response]
+    ta.save
+    flash[:success] = 'keyword updated'
+    redirect "/api/telephony_account/#{ta.id}/keywords"
+  end
+
+  get '/api/telephony_account/:id/keyword/:keyword_id' do
+    @ta = get_telephony_account(params[:id])
+    @kw = @ta.keywords.first(:id => params[:keyword_id])
+    halt 500, 'API error - keyword does not exist' if @kw.nil?
+    haml :telephony_account_edit_keyword
+  end
+
   post '/api/telephony_account/:id/keyword' do
     halt 500, 'API error - missing word parameter' if params[:word].nil?
     halt 500, 'API error - missing response parameter' if params[:response].empty?
-    ta = TelephonyAccount.first(:id => params[:id])
-    halt 500, 'API error - bad telephony account id' if ta.nil?
+    ta = get_telephony_account(params[:id])
     ta.keywords.new(:word => params[:word], :response => params[:response])
     halt 500, 'API error - failed to save' unless ta.save
     flash[:success] = 'keyword added'
@@ -14,8 +31,7 @@ class TongueTiedApp < Sinatra::Base
 
   post '/api/telephony_account/:id/subscriber' do
     halt 500, 'API error - missing subscriber parameter' if params[:from_number].nil?
-    ta = TelephonyAccount.first(:id => params[:id])
-    halt 500, 'API error - bad telephony account id' if ta.nil?
+    ta = get_telephony_account(params[:id])
     ta.subscribers.new(:from_number => params[:from_number], :to_number => ta.number)
     halt 500, 'API error - failed to save' unless ta.save
     flash[:success] = 'subscriber added'
@@ -23,19 +39,19 @@ class TongueTiedApp < Sinatra::Base
   end
 
   get '/api/telephony_account/:id/keywords' do
-    @ta = TelephonyAccount.get(params[:id])
+    @ta = get_telephony_account(params[:id])
     @telephony_account_keywords = @ta.keywords
     haml :telephony_account_keywords
   end
 
   get '/api/telephony_account/:id/subscribers' do
-    @ta = TelephonyAccount.get(params[:id])
+    @ta = get_telephony_account(params[:id])
     @telephony_account_subscribers = @ta.subscribers.active_subscribers
     haml :telephony_account_subscribers
   end
 
   get '/api/telephony_account_detail/:id' do
-    @telephony_account = TelephonyAccount.get(params[:id])
+    @telephony_account = get_telephony_account(params[:id])
     haml :telephony_account_detail
   end
 
@@ -55,6 +71,12 @@ class TongueTiedApp < Sinatra::Base
     halt 500, 'API error - failed to save' unless ta.save
     flash[:success] = 'created'
     redirect '/api/telephony_account/list'
+  end
+
+  def get_telephony_account(id)
+    ta = TelephonyAccount.first(:id => id)
+    halt 500, 'API error - bad telephony account id' if ta.nil?
+    ta
   end
   
 end

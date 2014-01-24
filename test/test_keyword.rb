@@ -19,6 +19,42 @@ class TongueTiedKeyword < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_can_update_keyword_via_api
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    kw.reload
+    put "/api/telephony_account/#{@t.id}/keyword/#{kw.id}", { :word => 'words', :response => 'to mommy' }
+    follow_redirect!
+    assert last_response.ok?
+    kw.reload
+    assert_equal 'to mommy', kw.response
+  end
+
+  def test_keyword_edit_page_has_esisting_values
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    kw.reload
+    get "/api/telephony_account/#{@t.id}/keyword/#{kw.id}"
+    assert last_response.ok?
+  end
+
+  def test_keyword_edit_page_exists
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    kw.reload
+    get "/api/telephony_account/#{@t.id}/keyword/#{kw.id}"
+    assert_equal "WORD", kw.word
+    assert_equal "to your mother", kw.response
+  end
+
+
+  def test_keyword_page_has_edit_keyword_link
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    get "/api/telephony_account/#{@t.id}/keywords"
+    assert_match /edit keyword/, last_response.body
+  end
+
   def test_text_with_keyword_responds_with_text
     TestProviderSms.any_instance.stubs(:send_message).once
     @t.keywords.new(:word => 'word', :response => 'to your mom')

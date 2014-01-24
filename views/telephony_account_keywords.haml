@@ -6,4 +6,7 @@
 %ul
   - @telephony_account_keywords.each do |word|
     %li
-      #{word.word}
+      #{word.word} |
+      %a{ :href => "/api/telephony_account/#{@ta.id}/keyword/#{word.id}" }
+        edit keyword
+
