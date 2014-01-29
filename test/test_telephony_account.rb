@@ -21,9 +21,9 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
 
 
   def test_text_message_to_telephony_account_sends_generic_text_message_response
-    TestProviderSms.any_instance.stubs(:send_message).once
+    TestProviderSms.any_instance.stubs(:send_message).once.with('18889990000', '123', 'booyeah')
     t = create_account
-    t.text_messages.new(:body => "generic", :to_number => t.number, :from_number => "2222222222")
+    t.text_messages.new(:body => "generic", :to_number => t.number, :from_number => "123")
     assert t.save
   end
 

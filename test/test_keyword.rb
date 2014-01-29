@@ -56,15 +56,11 @@ class TongueTiedKeyword < TongueTiedTests
   end
 
   def test_text_with_keyword_responds_with_text
-    TestProviderSms.any_instance.stubs(:send_message).once
+    TestProviderSms.any_instance.stubs(:send_message).once.with('1', '111', 'to your mom')
     @t.keywords.new(:word => 'word', :response => 'to your mom')
     assert @t.save
     t = @t.text_messages.new("body" => "word", "from_number" => "111", :to_number => @t.number)
     t.save
-    # TODO: should be testing this way, but it's not working right now...
-    # assert_received(TestProviderSms, :send_message) { | expect | 
-    #   expect.with( :from_number => @t.number, :to_number => '111', :message => 'to your mom' ).once
-    # }
   end
 
   def test_keyword_can_have_keyword_subscriber
