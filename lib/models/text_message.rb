@@ -24,7 +24,6 @@ class TextMessage
     else
       generic_response_message = self.telephony_account.response
       sms.send_message(self.telephony_account.number, self.from_number, generic_response_message) unless generic_response_message.blank?
-      # send generic response here...
     end
 
   end

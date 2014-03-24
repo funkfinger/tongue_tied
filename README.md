@@ -12,7 +12,8 @@ Things to do:
 
 ### Fix
 
-- fix the quiz responses - text message numbers enrolled in a quiz should get a quiz response - text message numbers not enrolled in a quiz should get a generic message or a keyword message 
+- fix the quiz responses - text message numbers enrolled in a quiz should get a quiz response - text message numbers not enrolled in a quiz should get a generic message or a keyword message
+- decouple SMS functionality with app
 
 
 ### Basics

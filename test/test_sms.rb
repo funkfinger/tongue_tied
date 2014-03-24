@@ -9,6 +9,13 @@ class SmsTest < TongueTiedTests
     super
   end
 
+  def test_sms_creates_log_entries
+    log_count = SmsLog.all.count
+    sms = Sms.create('test_provider')
+    sms.send_message(1, 223344, "blah")
+    assert_equal log_count + 1, SmsLog.all.count
+  end
+
   def test_send_messages_api_halts_500_on_bad_telephony_account_id
     post '/api/sms', {:telephony_account_id => 'a', :message => 'bad t.a. id', :numbers => [1]}
     refute last_response.ok?

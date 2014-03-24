@@ -30,8 +30,8 @@ class TongueTiedTests < MiniTest::Unit::TestCase
 end
 
 class Sms
-  def self.create(type)
-    case type
+  def self.create(provider_type)
+    case provider_type
     when 'twilio'
       @sms_provider = TwilioSms.new
     when 'plivo'
@@ -40,14 +40,14 @@ class Sms
       @sms_provider = TestProviderSms.new
     else
     end
-  end
+  @sms_provider.provider = provider_type
   @sms_provider
+  end
 end
 
 class TestProviderSms < Sms
   def send_message(from_number, to_number, message)
-    # puts method(__method__).parameters.inspect
-    # puts local_variables.inspect
+    super
   end
 end
 

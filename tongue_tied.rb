@@ -12,6 +12,8 @@ require 'plivo'
 
 # require 'rack-flash'
 
+require_relative 'lib/sms'
+
 require_relative 'lib/models/init'
 require_relative 'lib/routes/init'
 require_relative 'lib/helpers/init'
