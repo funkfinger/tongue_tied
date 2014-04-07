@@ -1,9 +1,24 @@
-%form{ :action => "/api/telephony_account/#{@ta.id}", :method => 'POST' }
-  %input{ :type => 'hidden', :name => '_method', :value => 'put' }
-  %input{ :type => 'text', :name => 'number', :value => @ta.number }
-  %textarea{ :name => 'response' }
-    #{@ta.response}
-  %input{ :type => 'submit', :class => 'btn btn-default', :value => 'update telephony account'}
-/ %form{ :action => "/api/telephony_account/#{@ta.id}/keyword/#{@kw.id}", :method => 'POST' }
-/   %input{ :type => 'hidden', :name => '_method', :value => 'delete' }
-/   %input{ :type => 'submit', :class => 'btn btn-default', :value => 'delete keyword'}
+%div.container
+  %div.row
+    %div.col-md-6.col-md-offset-3
+      %div.well.well-sm
+        %form.form-horizontal{:action=>"/api/telephony_account/#{@ta.id}", :method=>"POST"}
+          %input{ :type => 'hidden', :name => '_method', :value => 'put' }
+          %fieldset
+            %legend.text-center{}Edit Telephony Account
+    
+            %div.form-group
+              %label.col-md-3.control-label{:for=>"number"}Number
+              %div.col-md-9
+                %input.form-control{:id=>'number', :type=>'text', :name => 'number', :value=>@ta.number }
+      
+            %div.form-group
+              %label.col-md-3.control-label{:for=>"response"}Default Response
+              %div.col-md-9
+                %textarea.form-control{:id=>'response', :type=>'text', :name=>'response', :placeholder=>"this is the default message that someone will get if they don't use a keyword..." }
+                  #{@ta.response}
+
+            %div.form-group
+              %div.col-md-12.text-right
+                %button.btn.btn-primary.btn-lg{:type=>"submit"}update telephony account
+

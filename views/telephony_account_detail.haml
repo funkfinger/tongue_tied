@@ -1,7 +1,10 @@
 %h1
-  Telephony Account Detail - #{@telephony_account.number}
-  %a{ :href => "/api/telephony_account/#{@telephony_account.id}/edit" } edit telephony account
+  Telephony Account Detail
 %ul
+  %li
+    #{@telephony_account.number} | 
+    %a{ :href => "/api/telephony_account/#{@telephony_account.id}/edit" }
+      %span.glyphicon.glyphicon-edit
   %li 
     %b Provider:
     #{@telephony_account.provider}
