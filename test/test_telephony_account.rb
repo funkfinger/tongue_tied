@@ -10,6 +10,20 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
+  def test_edit_link_exists_on_telephony_account_detail_page
+    get "/api/telephony_account_detail/#{@t.id}"
+    assert_match /edit telephony account/, last_response.body
+  end
+
+  def test_can_edit_telephony_account_via_api
+    put "/api/telephony_account/#{@t.id}", { :number => '1', :provider => 'test_provider', :response => 'res' }
+    follow_redirect!
+    assert last_response.ok?
+    t = TelephonyAccount.get(@t.id)
+    assert_equal '1', t.number
+    assert_equal 'res', t.response
+  end
+
   def test_text_message_to_telephony_account_does_not_sends_generic_text_message_if_response_is_empty
     TestProviderSms.any_instance.stubs(:send_message).never
     t = create_account

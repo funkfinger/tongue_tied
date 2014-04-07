@@ -21,6 +21,7 @@ require_relative 'lib/helpers/init'
 
 class TongueTiedApp < Sinatra::Base
 
+  enable :method_override
   set :public_folder, 'public'
   enable :sessions
   # use Rack::Session::Cookie

@@ -1,5 +1,24 @@
 class TongueTiedApp < Sinatra::Base
 
+  put '/api/telephony_account/:id' do
+    ta = get_telephony_account(params[:id])
+    ta.number = params[:number]
+    ta.response = params[:response]
+    ta.save
+    flash[:success] = 'telephony account updated'
+    redirect "/api/telephony_account_detail/#{ta.id}"
+  end
+
+  delete '/api/telephony_account/:id/keyword/:keyword_id' do
+    ta = get_telephony_account(params[:id])
+    kw = ta.keywords.first(params[:id])
+    halt 500, 'API error - keyword does not exist' if kw.nil?
+    kw.destroy
+    ta.save
+    flash[:success] = 'keyword deleted'
+    redirect "/api/telephony_account/#{ta.id}/keywords"
+  end
+
 
   put '/api/telephony_account/:id/keyword/:keyword_id' do
     ta = get_telephony_account(params[:id])

@@ -1,5 +1,9 @@
-%form{ :action => "/api/telephony_account/#{@ta.id}/keyword/#{@kw.id}", :method => 'PUT' }
+%form{ :action => "/api/telephony_account/#{@ta.id}/keyword/#{@kw.id}", :method => 'POST' }
+  %input{ :type => 'hidden', :name => '_method', :value => 'put' }
   %input{ :type => 'text', :name => 'word', :value => @kw.word.upcase }
   %textarea{ :name => 'response' }
     #{@kw.response}
   %input{ :type => 'submit', :class => 'btn btn-default', :value => 'update keyword'}
+%form{ :action => "/api/telephony_account/#{@ta.id}/keyword/#{@kw.id}", :method => 'POST' }
+  %input{ :type => 'hidden', :name => '_method', :value => 'delete' }
+  %input{ :type => 'submit', :class => 'btn btn-default', :value => 'delete keyword'}

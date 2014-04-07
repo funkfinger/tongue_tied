@@ -19,11 +19,30 @@ class TongueTiedKeyword < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_can_delete_keyword_via_api
+    assert_equal 0, @t.keywords.all().count
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    @t.keywords.reload
+    assert_equal 1, @t.keywords.all(:word => 'WORD').count
+    delete "/api/telephony_account/#{@t.id}/keyword/#{kw.id}"
+    follow_redirect!
+    assert last_response.ok?
+    assert_equal 0, @t.keywords.all().count
+  end
+
+  def test_delete_keyword_link_exists
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
+    @t.save
+    get "/api/telephony_account/#{@t.id}/keyword/#{kw.id}"
+    assert_match /delete keyword/, last_response.body
+  end
+
   def test_can_update_keyword_via_api
     kw = @t.keywords.new(:word => 'word', :response => 'to your mother')
     @t.save
     kw.reload
-    put "/api/telephony_account/#{@t.id}/keyword/#{kw.id}", { :word => 'words', :response => 'to mommy' }
+    put "/api/telephony_account/#{@t.id}/keyword/#{kw.id}", { :word => 'wordsss', :response => 'to mommy' }
     follow_redirect!
     assert last_response.ok?
     kw.reload
