@@ -1,5 +1,11 @@
 class TongueTiedApp < Sinatra::Base
 
+
+  get '/api/telephony_account/:id/edit' do
+    @ta = get_telephony_account(params[:id])
+    haml :telephony_account_edit
+  end
+
   put '/api/telephony_account/:id' do
     ta = get_telephony_account(params[:id])
     ta.number = params[:number]

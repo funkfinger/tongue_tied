@@ -10,6 +10,11 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
+  def test_telephony_account_edit_page_exists
+    get "/api/telephony_account/#{@t.id}/edit"
+    assert last_response.ok?, last_response.status
+  end
+
   def test_edit_link_exists_on_telephony_account_detail_page
     get "/api/telephony_account_detail/#{@t.id}"
     assert_match /edit telephony account/, last_response.body
