@@ -57,7 +57,7 @@ class TongueTiedApp < Sinatra::Base
   post '/api/telephony_account/:id/subscriber' do
     halt 500, 'API error - missing subscriber parameter' if params[:from_number].nil?
     ta = get_telephony_account(params[:id])
-    ta.subscribers.new(:from_number => params[:from_number], :to_number => ta.number)
+    ta.subscribers.new(:from_number => params[:from_number])
     halt 500, 'API error - failed to save' unless ta.save
     flash[:success] = 'subscriber added'
     redirect "/api/telephony_account/#{ta.id}/subscribers"

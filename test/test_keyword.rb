@@ -88,7 +88,7 @@ class TongueTiedKeyword < TongueTiedTests
     @t.reload
     kw = @t.keywords.first(:word => 'WORD')
     count = kw.subscribers.count
-    s = @t.subscribers.new(:from_number => '111', :to_number => @t.number)
+    s = @t.subscribers.new(:from_number => '111')
     kw.subscribers << s
     assert kw.save
     kw.reload

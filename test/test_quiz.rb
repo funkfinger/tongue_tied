@@ -18,7 +18,7 @@ class TongueTiedQuizTest < TongueTiedTests
   def setup_quiz_with_questions_and_subscribers
     @q = @t.quizzes.new(:name => 'quiz with participant responses', :response_message => 'response message')
     assert @t.activate_quiz(@q)
-    @s = @t.subscribers.new(:from_number => '111', :to_number => @t.number)
+    @s = @t.subscribers.new(:from_number => '111')
     @q.subscribers << @s
     @quest1 = @q.quiz_questions.new(:body => 'first question')
     @quest2 = @q.quiz_questions.new(:body => 'second question')
@@ -91,7 +91,7 @@ class TongueTiedQuizTest < TongueTiedTests
 
   def test_quiz_subscribers_can_have_quiz_responses
     q = @t.quizzes.new(:name => 'quiz with participant responses', :response_message => 'response message')
-    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111')
     q.subscribers << s
     quest1 = q.quiz_questions.new(:body => 'first question')
     quest2 = q.quiz_questions.new(:body => 'second question')
@@ -273,8 +273,8 @@ class TongueTiedQuizTest < TongueTiedTests
 
   def test_quiz_can_send_question_to_subscribers
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
-    q.subscribers << @t.subscribers.new(:from_number => '111', :to_number => '222')
-    q.subscribers << @t.subscribers.new(:from_number => '112', :to_number => '222')
+    q.subscribers << @t.subscribers.new(:from_number => '111')
+    q.subscribers << @t.subscribers.new(:from_number => '112')
     q.quiz_questions.new(:body => 'first question')
     assert q.save
     sms = Sms.create('test_provider')
@@ -285,7 +285,7 @@ class TongueTiedQuizTest < TongueTiedTests
   def test_quiz_can_have_subscribers
     q = @t.quizzes.new(:name => 'quiz with participants', :response_message => 'response message')
     assert_equal 0, q.subscribers.count
-    s = @t.subscribers.new(:from_number => '111', :to_number => '222')
+    s = @t.subscribers.new(:from_number => '111')
     q.subscribers << s
     assert q.save
     assert_equal 1, q.subscribers.count

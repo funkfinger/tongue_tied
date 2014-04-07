@@ -42,7 +42,7 @@ class TextMessage
   end
 
   def create_and_activate_subscriber
-    @s = self.telephony_account.subscribers.first_or_create(:from_number => self.from_number, :to_number => self.to_number)
+    @s = self.telephony_account.subscribers.first_or_create(:from_number => self.from_number)
     @s.update(:active => true)
   end
 
