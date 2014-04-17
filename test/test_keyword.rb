@@ -19,6 +19,17 @@ class TongueTiedKeyword < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+
+  def test_confirm_that_creating_a_text_message_with_keyword_adds_subscriber_to_keyword
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mom')
+    assert_equal 0, kw.subscribers.count
+    assert kw.save
+    tm = @t.text_messages.new(:body => "word", :to_number => "1", :from_number => "999")
+    assert tm.save
+    kw.reload
+    assert_equal 1, kw.subscribers.count
+  end
+
   def test_keyword_edit_page_lists_keyword_subscribers
     kw = @t.keywords.new(:word => 'word', :response => 'to your mom')
     s = @t.subscribers.new(:from_number => '111')

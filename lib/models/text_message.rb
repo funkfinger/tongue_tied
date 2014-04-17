@@ -21,6 +21,8 @@ class TextMessage
     sms = Sms.create(self.telephony_account.provider)
     if !keyword.nil?
       sms.send_message(self.telephony_account.number, self.from_number, keyword.response)
+      keyword.subscribers << @s
+      keyword.save
     else
       generic_response_message = self.telephony_account.response
       sms.send_message(self.telephony_account.number, self.from_number, generic_response_message) unless generic_response_message.blank?
