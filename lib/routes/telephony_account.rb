@@ -97,11 +97,5 @@ class TongueTiedApp < Sinatra::Base
     flash[:success] = 'created'
     redirect '/api/telephony_account/list'
   end
-
-  def get_telephony_account(id)
-    ta = TelephonyAccount.first(:id => id)
-    halt 500, 'API error - bad telephony account id' if ta.nil?
-    ta
-  end
   
 end

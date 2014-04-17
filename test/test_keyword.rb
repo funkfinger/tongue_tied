@@ -19,6 +19,18 @@ class TongueTiedKeyword < TongueTiedTests
 
   ######## test below are in reverse cronological order....
 
+  def test_keyword_edit_page_lists_keyword_subscribers
+    kw = @t.keywords.new(:word => 'word', :response => 'to your mom')
+    s = @t.subscribers.new(:from_number => '111')
+    kw.subscribers << s
+    s = @t.subscribers.new(:from_number => '222')
+    kw.subscribers << s
+    assert @t.save
+    get "/api/telephony_account/#{@t.id}/keyword/#{kw.id}"
+    assert_match /111/, last_response.body
+    assert_match /222/, last_response.body
+  end
+
   def test_can_delete_keyword_via_api
     assert_equal 0, @t.keywords.all().count
     kw = @t.keywords.new(:word => 'word', :response => 'to your mother')

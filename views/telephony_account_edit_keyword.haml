@@ -7,3 +7,10 @@
 %form{ :action => "/api/telephony_account/#{@ta.id}/keyword/#{@kw.id}", :method => 'POST' }
   %input{ :type => 'hidden', :name => '_method', :value => 'delete' }
   %input{ :type => 'submit', :class => 'btn btn-default', :value => 'delete keyword'}
+
+%h2
+  subscribers to this keyword
+%ul
+  - @kw.subscribers.each do |s|
+    %li 
+      #{s.from_number}

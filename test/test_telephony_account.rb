@@ -10,6 +10,14 @@ class TongueTiedTelephonyAccountTest < TongueTiedTests
     return t
   end
 
+  def test_telephony_account_can_have_subscriber_lists
+    t = create_account
+    assert_equal 0, t.subscriber_lists.count
+    t.subscriber_lists.new(:name =>'new list')
+    assert t.save
+    assert_equal 1, t.subscriber_lists.count
+  end
+
   def test_telephony_account_edit_page_exists
     get "/api/telephony_account/#{@t.id}/edit"
     assert last_response.ok?, last_response.status

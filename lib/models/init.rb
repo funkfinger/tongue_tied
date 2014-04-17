@@ -16,7 +16,7 @@ require_relative 'user'
 require_relative 'quiz'
 require_relative 'telephony_account'
 require_relative 'sms_log'
-
+require_relative 'subscriber_list'
 
 # DataMapper.auto_migrate!
 # DataMapper.finalize
