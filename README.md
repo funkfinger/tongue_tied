@@ -1,5 +1,8 @@
+
 tongue_tied README - test
 ==================
+
+[ ![Codeship Status for funkfinger/tongue_tied](https://codeship.com/projects/f02f65f0-88d1-0132-dcd4-3ae5e43a70a3/status?branch=master)](https://codeship.com/projects/59532)
 
 About:
 ------
