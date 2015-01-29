@@ -1,5 +1,5 @@
 %h1 betwext keyword list
-%ul
+%ol
   - @betwext_keyword_list.each do |keyword|
     %li
       %a{ :href=> "/api/betwext/keyword/#{keyword.keyword}" }= keyword.keyword
