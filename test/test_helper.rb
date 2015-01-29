@@ -19,7 +19,7 @@ def app
   TongueTiedApp.new!
 end
 
-class TongueTiedTests < MiniTest::Unit::TestCase
+class TongueTiedTests < MiniTest::Test
   include Rack::Test::Methods
   def setup
     Sinatra::Sessionography.session.clear
@@ -50,5 +50,3 @@ class TestProviderSms < Sms
     super
   end
 end
-
-
