@@ -36,7 +36,7 @@ Things to do:
   - **STOP** deactivates
   - **HELP** lists available options (public)
   - **TT** admin functions probably followed by a user identifier...
-  
+
 
 ### Raffle
 
@@ -63,26 +63,49 @@ Misc.:
 --------------------
 
 Using foreman to start this with an .env file:
-    
+
     foreman start
 
 Run tests using foreman so that the environment variables get set:
-    
+
     foreman run bundle exec ruby test/test_tongue_tied.rb
-    
+
 Run the tests using rake:
-    
+
     foreman run bundle exec rake test
 
-or more a little more simply, the default is test:     
+or more a little more simply, the default is test:
 
     foreman run bundle exec rake
-    
+
 Push to Heroku
-    
+
     git push heroku master
 
 Since this is an educational project for me, It's worthwhile to mention that there may be a commercial solution for something this already - Google pointed to http://xaffle.com/index.php/ and http://www.estartqatar.com/coupons.php (and others...)...
+
+Codeship
+
+environment variables may need to be set- here are some:
+
+    export FOO=bar
+    export TWILIO_ACCOUNT_SID=uh_uh
+    export TWILIO_AUTH_TOKEN=nah
+    export DB_FLAVOR=postgresql
+    export DB_HOST=localhost
+    export DB_PORT=5432
+    export DB_NAME=test
+    export DB_USER=user
+    export DB_PASS=pass
+    export BETWEXT_COOKIE=nope
+    export PLIVO_AUTHID=uh_no
+    export PLIVO_TOKEN=nill
+    export TWITTER_OAUTH_CONSUMER_KEY=nada
+    export TWITTER_OAUTH_CONSUMER_SECRET=zilch
+    export FACEBOOK_APP_ID=zero
+    export FACEBOOK_SECRET=goose_egg
+
+
 
 
 

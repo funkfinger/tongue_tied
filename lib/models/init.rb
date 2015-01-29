@@ -1,7 +1,7 @@
 require 'data_mapper'
 require 'dm-validations'
 
-db_connection_string = "postgres://#{ENV['DB_USER']}:#{ENV['DB_PASS']}@#{ENV['DB_HOST']}/#{ENV['DB_NAME']}"
+db_connection_string = "postgres://#{ENV['PG_USER']}:#{ENV['PG_PASSWORD']}@#{ENV['DB_HOST']}/#{ENV['DB_NAME']}"
 DataMapper.setup(:default, db_connection_string)
 
 require_relative 'text_message'
@@ -30,7 +30,7 @@ class Hash
     keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
     keys.each_with_object(self.class.new) { |k, hash| hash[k] = self[k] if has_key?(k) }
   end
-  
+
   def slice!(*keys)
     keys.map! { |key| convert_key(key) } if respond_to?(:convert_key, true)
     omit = slice(*self.keys - keys)
