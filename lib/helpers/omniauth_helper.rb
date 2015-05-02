@@ -8,7 +8,7 @@ module OmniAuthHelpers
     raise if session[:uid].nil?
     u = User.first(:uid => session[:uid])
     raise "session = #{session.to_yaml}" if u.nil?
-    "<a href='#'>logged in as #{u.name} | logout</a>"
+    "<a href='/auth/logout'>logged in as #{u.name} | logout</a>"
   end
 
 end
