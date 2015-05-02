@@ -25,12 +25,12 @@ class TongueTiedOmniauth < TongueTiedTests
 
   def test_sign_in_links_only_appears_if_not_signed_in
     get '/'
-    assert_match /Sign\-In with Twitter/, last_response.body
+    assert_match /\/auth\/twitter/, last_response.body
     # assert_match /Sign\-In with Facebook/, last_response.body
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
     get '/'
     assert_match /logged in as Fake User/, last_response.body
-    refute_match /Sign-In with Twitter/, last_response.body
+    refute_match /\/auth\/twitter/, last_response.body
     # refute_match /Sign-In with Facebook/, last_response.body
   end
 
