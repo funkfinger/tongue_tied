@@ -12,19 +12,19 @@
           %li
             = logout_link
         - else
-          %li{:class => ''}
-            %a{:href => '/auth/twitter'}
-              %i.icon-twitter
-              Sign-In with Twitter
-          %li{:class => ''}
-            %a{:href => '/auth/facebook'}
-              %i.icon-facebook
-              Sign-In with Facebook
+          /%li{:class => ''}
+            /%a{:href => '/auth/twitter'}
+              /%i.icon-twitter
+              /Sign-In with Twitter
+          /%li{:class => ''}
+            /%a{:href => '/auth/facebook'}
+              /%i.icon-facebook
+              /Sign-In with Facebook
 
-        - #if current_user.nil?
-    /     %li{:class => 'active'}
-    /       %a{:href => '#'} Home
-    /     %li
-    /       %a{:href => '#about'} About
-    /     %li
-    /       %a{:href => '#contact'} Contact
+-#        - if current_user.nil?
+-#    /     %li{:class => 'active'}
+-#    /       %a{:href => '#'} Home
+-#    /     %li
+-#    /       %a{:href => '#about'} About
+-#    /     %li
+-#    /       %a{:href => '#contact'} Contact

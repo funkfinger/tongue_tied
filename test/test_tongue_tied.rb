@@ -31,7 +31,7 @@ def test_homepage_uses_bootstrap_from_cdn
   assert_match /https\:\/\/maxcdn\.bootstrapcdn\.com\/bootstrap\/3\.3\.4\/css\/bootstrap\.min\.css/, last_response.body  
 end
 
-def Xtest_homepage_is_claim_page_for_now
+def XXX_deleted_20150502_test_homepage_is_claim_page_for_now
   get '/'
   assert last_response.ok?
   assert_match /claim your prize/, last_response.body
@@ -44,13 +44,13 @@ end
   end
 
 
-  def test_layout_has_angular_js
+  def XXX_disabled_20150502_test_layout_has_angular_js
     get '/'
     assert last_response.ok?
     assert_match /angular\.min\.js/, last_response.body
   end
 
-  def test_layout_has_breadcrumb
+  def XXX_disabled_20150502_test_layout_has_breadcrumb
     get '/'
     assert last_response.ok?
     assert_match /breadcrumb/, last_response.body
