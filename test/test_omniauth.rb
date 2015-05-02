@@ -9,15 +9,29 @@ class TongueTiedOmniauth < TongueTiedTests
     @auth = YAML::load(SAMPLE_TWITTER_AUTH)
   end
 
+  def test_loguot_link
+    s = Sinatra::Sessionography.session
+    refute s[:uid], s
+    get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
+    follow_redirect!
+    assert s[:uid]
+    get 'auth/logout'
+    follow_redirect!
+    assert last_response.ok?
+    refute s[:uid], s
+  end
+  
+
+
   def test_sign_in_links_only_appears_if_not_signed_in
     get '/'
     assert_match /Sign\-In with Twitter/, last_response.body
-    assert_match /Sign\-In with Facebook/, last_response.body
+    # assert_match /Sign\-In with Facebook/, last_response.body
     get '/auth/blah/callback', {}, {'omniauth.auth' => @auth}
     get '/'
     assert_match /logged in as Fake User/, last_response.body
     refute_match /Sign-In with Twitter/, last_response.body
-    refute_match /Sign-In with Facebook/, last_response.body
+    # refute_match /Sign-In with Facebook/, last_response.body
   end
 
   def test_user_raw_data_is_updated_each_time_they_log_in

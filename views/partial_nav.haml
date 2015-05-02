@@ -12,14 +12,9 @@
           %li
             = logout_link
         - else
-          /%li{:class => ''}
-            /%a{:href => '/auth/twitter'}
-              /%i.icon-twitter
-              /Sign-In with Twitter
-          /%li{:class => ''}
-            /%a{:href => '/auth/facebook'}
-              /%i.icon-facebook
-              /Sign-In with Facebook
+          %li{:class => ''}
+            %a{:href => '/auth/twitter'}
+              Sign-In with Twitter
 
 -#        - if current_user.nil?
 -#    /     %li{:class => 'active'}

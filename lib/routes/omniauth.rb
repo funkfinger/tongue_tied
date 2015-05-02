@@ -13,5 +13,12 @@
   	flash[:error] = params[:message] # if using sinatra-flash or rack-flash
   	redirect '/'
   end
+  
+  get '/auth/logout' do
+    session[:uid] = nil
+    flash[:success] = "logged out"
+    redirect "/"
+  end
+    
 
 end
