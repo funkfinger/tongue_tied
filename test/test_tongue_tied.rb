@@ -25,6 +25,19 @@ class TongueTied < TongueTiedTests
   
 ######## test below are in reverse cronological order....
 
+def test_homepage_uses_bootstrap_from_cdn
+  get '/'
+  assert last_response.ok?
+  assert_match /https\:\/\/maxcdn\.bootstrapcdn\.com\/bootstrap\/3\.3\.4\/css\/bootstrap\.min\.css/, last_response.body  
+end
+
+def Xtest_homepage_is_claim_page_for_now
+  get '/'
+  assert last_response.ok?
+  assert_match /claim your prize/, last_response.body
+end
+
+
   def test_blank
     assert "".blank?
     assert nil.blank?
