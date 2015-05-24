@@ -26,6 +26,16 @@ class TongueTiedBetwext < TongueTiedTests
   end
 
   ######## test below are in reverse cronological order....
+  
+  def test_moving_betwext_keyword_creates_tt_keyword
+    k = Keyword.first(:word => 'ttkeyword')
+    refute k
+    b = BetwextKeyword.new(:keyword => 'ttkeyword')
+    assert b.save
+    k = Keyword.first(:word => 'ttkeyword')
+    assert k, k.inspect
+  end
+  
 
   def test_keyword_has_creation_date
     b = BetwextKeyword.new(:keyword => 'blah')

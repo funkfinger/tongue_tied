@@ -24,4 +24,12 @@ class BetwextKeyword
   property :id, Serial
   property :keyword, String, :required => true
   timestamps :at
+  
+  after :create , :create_keyword
+  
+  def create_keyword
+    k = Keyword.first_or_new(:word => self.keyword, :response => 'thanks')
+    k.save
+  end
+  
 end

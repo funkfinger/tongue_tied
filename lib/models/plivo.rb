@@ -1,4 +1,3 @@
-
 class PlivoRequest
   
   include DataMapper::Resource

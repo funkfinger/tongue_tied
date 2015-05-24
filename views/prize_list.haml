@@ -1,0 +1,23 @@
+%h1 Available Prizes  
+.container
+  .row
+    - @pl.each do |p|
+      .col-sm-6.col-md-4
+        .thumbnail
+          %img{:src=>"#{p.image_url.blank? ? '//tonguetied.rocks/images/prizes/lips.gif' : p.image_url}", :alt=>"prize image"}
+          .caption
+            %h3 #{p.name}
+            %p #{p.description}
+            %p.center-block 
+              %a{:href=>"/#", :class=>"btn btn-success", :role=>"button"}CLAIM!
+
+.container{:'data-ng-controller' => "PrizeListCtrl"}
+  .row
+    .col-sm-6.col-md-4{:'data-ng-repeat' => "{{prize in prizes}}"}
+      .thumbnail
+        %img{:src => "{{prize.image_url}}"}
+        .caption
+          %h3 {{prize.name}}
+          %p {{prize.description}}
+          %p.center-block 
+            %a{:href=>"/#", :class=>"btn btn-success", :role=>"button"}CLAIM!

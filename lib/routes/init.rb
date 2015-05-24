@@ -7,6 +7,7 @@ require_relative 'telephony_account'
 require_relative 'quiz'
 require_relative 'sms'
 require_relative 'subscriber_list'
+require_relative 'prize_list'
 
 
 class TongueTiedApp < Sinatra::Base
