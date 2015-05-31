@@ -28,11 +28,11 @@ class TongueTiedBetwext < TongueTiedTests
   ######## test below are in reverse cronological order....
   
   def test_moving_betwext_keyword_creates_tt_keyword
-    k = Keyword.first(:word => 'ttkeyword')
+    k = Keyword.first(:word => 'ttkeyword'.upcase)
     refute k
     b = BetwextKeyword.new(:keyword => 'ttkeyword')
     assert b.save
-    k = Keyword.first(:word => 'ttkeyword')
+    k = Keyword.first(:word => 'ttkeyword'.upcase)
     assert k, k.inspect
   end
   

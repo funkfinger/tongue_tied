@@ -28,8 +28,13 @@ class BetwextKeyword
   after :create , :create_keyword
   
   def create_keyword
-    k = Keyword.first_or_new(:word => self.keyword, :response => 'thanks')
-    k.save
+    # TODO: this stinks, hopefully temporary
+    ta = TelephonyAccount.first_or_new(:number => 4806668601, :provider => 'betwext')
+    k = ta.keywords.first(:word => self.keyword)
+    if k.nil? 
+      k = ta.keywords.new(:word => self.keyword, :response => 'back atcha')
+      raise unless k.save
+    end
   end
   
 end
