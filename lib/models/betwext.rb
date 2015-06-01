@@ -1,3 +1,8 @@
+# TODO: this stinks, hopefully temporary
+def betwext_ta
+  TelephonyAccount.first_or_new(:number => 4806668601, :provider => 'betwext')
+end
+
 class BetwextRequest
   include DataMapper::Resource
   property :id, Serial
@@ -10,6 +15,17 @@ class BetwextRequest
   property :keyword, String, :required => true
   timestamps :at
   has n, :betwext_winners
+  
+  after :create, :create_betwext_keyword_and_subscriber
+    
+  def create_betwext_keyword_and_subscriber
+    keyword = BetwextKeyword.first_or_create(:keyword => self.keyword.upcase)
+    raise unless keyword.save
+    # TODO: this stinks, hopefully temporary
+    s = betwext_ta.subscribers.first_or_create(:from_number => self.sender_number)
+    raise unless s.save
+  end
+  
 end
 
 class BetwextWinner
@@ -27,12 +43,10 @@ class BetwextKeyword
   
   after :create , :create_keyword
   
-  def create_keyword
-    # TODO: this stinks, hopefully temporary
-    ta = TelephonyAccount.first_or_new(:number => 4806668601, :provider => 'betwext')
-    k = ta.keywords.first(:word => self.keyword)
+  def create_keyword    
+    k = betwext_ta.keywords.first(:word => self.keyword)
     if k.nil? 
-      k = ta.keywords.new(:word => self.keyword, :response => 'back atcha')
+      k = betwext_ta.keywords.new(:word => self.keyword, :response => 'back atcha')
       raise unless k.save
     end
   end

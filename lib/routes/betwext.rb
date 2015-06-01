@@ -18,8 +18,8 @@ class TongueTiedApp < Sinatra::Base
       :keyword => params['keyword']
     })
     halt(500, 'API error - can\'t save request') if !br.save
-    keyword = BetwextKeyword.first_or_create({ :keyword => params['keyword'] })
-    halt(500, 'API error - can\'t save keyword') if !keyword.save
+    # keyword = BetwextKeyword.first_or_create({ :keyword => params['keyword'] })
+    # halt(500, 'API error - can\'t save keyword') if !keyword.save
     'created'
   end
   

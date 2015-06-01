@@ -27,15 +27,24 @@ class TongueTiedBetwext < TongueTiedTests
 
   ######## test below are in reverse cronological order....
   
-  def test_moving_betwext_keyword_creates_tt_keyword
+  def test_betwext_request_creates_subscriber
+    num = 1112223333
+    s = betwext_ta.subscribers.first(:conditions => {:from_number => num})
+    assert s.nil?
+    br = BetwextRequest.new( :raw => 'blah', :message_id => "a", :sender_number => num, :recipient_number => 8005001212, :message => "blah", :time_received => "", :keyword => "blah")
+    assert br.save
+    s = betwext_ta.subscribers.first(:conditions => {:from_number => num})
+    assert s, betwext_ta.subscribers.all.inspect   
+  end
+  
+  def test_betwext_keyword_creates_tt_keyword
     k = Keyword.first(:word => 'ttkeyword'.upcase)
     refute k
     b = BetwextKeyword.new(:keyword => 'ttkeyword')
     assert b.save
     k = Keyword.first(:word => 'ttkeyword'.upcase)
     assert k, k.inspect
-  end
-  
+  end  
 
   def test_keyword_has_creation_date
     b = BetwextKeyword.new(:keyword => 'blah')
@@ -49,7 +58,7 @@ class TongueTiedBetwext < TongueTiedTests
     create_betwext({ :keyword => 'sort3' })
     create_betwext({ :keyword => 'sort4' })
     get '/api/betwext/keyword_list'
-    assert_match /sort4.*?sort3.*?sort2.*?sort1/m, last_response.body
+    assert_match /SORT4.*?SORT3.*?SORT2.*?SORT1/m, last_response.body
   end
 
   def test_keyword_list_is_unique
@@ -57,8 +66,8 @@ class TongueTiedBetwext < TongueTiedTests
     create_betwext({ :keyword => 'clickable_key' })
     create_betwext({ :keyword => 'click_key' })
     get '/api/betwext/keyword_list'
-    refute_match /clickable\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
-    assert_match /click\_key.*?click\_key.*?clickable\_key.*?clickable\_key/m, last_response.body
+    refute_match /CLICKABLE\_KEY.*?CLICKABLE\_KEY.*?CLICKABLE\_KEY/m, last_response.body
+    assert_match /CLICK\_KEY.*?CLICK\_KEY.*?CLICKABLE\_KEY.*?CLICKABLE\_KEY/m, last_response.body
   end
 
   def test_bewext_request_does_not_create_duplicate_number_keyword_pair
@@ -97,14 +106,14 @@ class TongueTiedBetwext < TongueTiedTests
     create_betwext({ :keyword => 'clickable_key' })
     get '/api/betwext/keyword_list'
     assert last_response.ok?
-    assert_match /\<a href\=\'(.*?)\'\>clickable_key\<\/a\>/, last_response.body, "Can't find clickable keyword"
+    assert_match /\<a href\=\'(.*?)\'\>CLICKABLE_KEY\<\/a\>/, last_response.body, "Can't find clickable keyword"
   end
 
   def test_list_betwext_keywords
     create_betwext({ :keyword => 'found_me_key' })
     get '/api/betwext/keyword_list'
     assert last_response.ok?
-    assert_match /found_me_key/, last_response.body, "Can't find me"
+    assert_match /FOUND_ME_KEY/, last_response.body, "Can't find me"
   end
 
   def test_betwext_request_message_field_is_required
@@ -131,9 +140,9 @@ class TongueTiedBetwext < TongueTiedTests
   def test_betwext_keyword_is_created
     post '/api/betwext/sms', sample_betwext_request({ :keyword => 'new_key'})
     assert last_response.ok?, "Post failed"
-    keyword = BetwextKeyword.first( :keyword => 'new_key' )
+    keyword = BetwextKeyword.first( :keyword => 'NEW_KEY' )
     refute keyword.nil?
-    assert_equal keyword.keyword, 'new_key'
+    assert_equal keyword.keyword, 'NEW_KEY'
   end
 
   def test_list_betwext_entries
