@@ -9,6 +9,12 @@ class TongueTiedOutgoingMessage < TongueTiedTests
     super
   end
 
+  def test_outgoing_message_sent_flag_get_switched_upon_send
+    om = @t.outgoing_messages.new(:message => 'blah')
+    refute om.sent
+    om.send_
+  end
+
   def test_outgoing_message_has_sent_flag
     om = @t.outgoing_messages.new(:message => 'blah')
     refute om.sent
