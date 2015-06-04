@@ -11,10 +11,10 @@ class Sms
     end
   end
 
-  def log_message(from_number, number, message)
+  def log_message(from_number, to_number, message)
     ta = TelephonyAccount.first(:number => from_number)
     raise "bad telephony account" if ta.nil?
-    ta.sms_logs.new(:body => message, :to_number => number)
+    ta.sms_logs.new(:body => message, :to_number => to_number)
     raise "log saving issue" unless ta.save
   end
 

@@ -12,6 +12,7 @@ class TelephonyAccount
   has n, :keywords
   has n, :sms_logs
   has n, :subscriber_lists
+  has n, :outgoing_messages
 
   def activate_quiz(q)
     self.quizzes.each do |quiz|
