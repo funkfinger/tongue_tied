@@ -39,7 +39,7 @@ end
 
 class PlivoSms < Sms
   # include Plivo
-  def send_message(from_number, to_number, message)
+  def send_message(from_number, to_number, message)    
     params = {
       'src' => from_number,
       'dst' => to_number,

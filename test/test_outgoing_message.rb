@@ -9,6 +9,11 @@ class TongueTiedOutgoingMessage < TongueTiedTests
     super
   end
 
+  def test_outgoing_message_has_sent_flag
+    om = @t.outgoing_messages.new(:message => 'blah')
+    refute om.sent
+  end
+
   def test_message_sends_to_all_subscribers
     TestProviderSms.any_instance.stubs(:send_message).times(3)
     om = @t.outgoing_messages.new(:message => 'blah')
