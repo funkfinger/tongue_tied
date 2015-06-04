@@ -18,6 +18,7 @@ require_relative 'telephony_account'
 require_relative 'sms_log'
 require_relative 'subscriber_list'
 require_relative 'prize_list'
+require_relative 'outgoing_message'
 
 # DataMapper.auto_migrate!
 # DataMapper.finalize

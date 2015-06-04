@@ -7,11 +7,12 @@
     %meta{:name => 'description', :content => ''}
     %meta{:name => 'author', :content => 'Tongue Tied'}
     
-    %link{:href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', :rel => 'stylesheet'}
+    -#%link{:href => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css', :rel => 'stylesheet'}
     
-    -#%link{:href => '/bootstrap/css/bootstrap.min.css', :rel => 'stylesheet'}
-    -#%link{:href => '/bootstrap/css/bootstrap-theme.min.css', :rel => 'stylesheet'}
-    -#%link{:href => '/font-awesome/css/font-awesome.min.css', :rel => 'stylesheet'}
+    %link{:href => '/bootstrap/css/bootstrap.min.css', :rel => 'stylesheet'}
+    %link{:href => '/bootstrap/css/bootstrap-theme.min.css', :rel => 'stylesheet'}
+    %link{:href => '/font-awesome/css/font-awesome.min.css', :rel => 'stylesheet'}
+    
     %link{:href => '/css/style.css', :rel => 'stylesheet'}
 
     /[if lt IE 9]
@@ -36,7 +37,12 @@
         / %h1= @page_header.nil? ? 'Tongue Tied' : @page_header 
         = yield
 
-    %script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'}
-    %script{:src => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'}
+    -#%script{:src => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'}
+    -#%script{:src => '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'}
+    -#%script{:src => 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular.min.js'}
+    
+    %script{:src => '/jquery/jquery.min.js'}
+    %script{:src => '/bootstrap/js/bootstrap.min.js'}
+    %script{:src => '/angular/angular.min.js'}
+    
 
-    %script{:src => 'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular.min.js'}

@@ -110,6 +110,23 @@ environment variables may need to be set- here are some:
 
 
 
+TODO:
+--------------------
+
+Necessary things to move from Betwext...
+
+- send an outgoing 'announcement' message - this should go to everyone in the telephony account
+  - these should queue, not send 
+- process an incoming 'keyword' message - this should add the user to the list for the night's drawing
+- send an outgoing 'winner' message - this can either go to an individual or a subset of the users in the list of tonight's drawing
+
+Nice things to have...
+
+- claim prizes via smartphone
+
+
+
+
 
 
 LICENSE

@@ -24,14 +24,19 @@ class TongueTiedBetwext < TongueTiedTests
     post '/api/betwext/sms', sample_betwext_request( params )
     assert last_response.ok?, "Post failed"
   end
+  
+  def br_hash
+    num = 1112223333
+    {:raw => 'blah', :message_id => "a", :sender_number => num, :recipient_number => 8005001212, :message => "blah", :time_received => "", :keyword => "blah"}
+  end 
 
   ######## test below are in reverse cronological order....
-  
+    
   def test_betwext_request_creates_subscriber
     num = 1112223333
     s = betwext_ta.subscribers.first(:conditions => {:from_number => num})
     assert s.nil?
-    br = BetwextRequest.new( :raw => 'blah', :message_id => "a", :sender_number => num, :recipient_number => 8005001212, :message => "blah", :time_received => "", :keyword => "blah")
+    br = BetwextRequest.new( br_hash)
     assert br.save
     s = betwext_ta.subscribers.first(:conditions => {:from_number => num})
     assert s, betwext_ta.subscribers.all.inspect   
