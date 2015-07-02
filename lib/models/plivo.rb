@@ -31,7 +31,7 @@ class PlivoRequest
     xml = Builder::XmlMarkup.new(:indent => 2, :target => response_xml)
     xml.instruct!
     xml.Response{|r| r.Message({:src => from, :dst => to}, message)}
-    response_xml    
+    response_xml
   end
 
 # this doesn't work....
