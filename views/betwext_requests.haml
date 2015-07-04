@@ -1,0 +1,4 @@
+%h1 request list
+%ol
+  - @request_list.each do |request|
+    %li "#{request.message}"

@@ -32,6 +32,13 @@ class TongueTiedBetwext < TongueTiedTests
 
   ######## test below are in reverse cronological order....
     
+  def test_song_request_list
+    create_betwext({ 'message' => 'request national anthem', 'keyword' => 'request' })
+    get '/api/betwext/requests'
+    assert last_response.ok?, "get failed"
+    assert_match /national anthem/, last_response.body    
+  end
+    
   def test_betwext_request_creates_subscriber
     num = 1112223333
     s = betwext_ta.subscribers.first(:conditions => {:from_number => num})
