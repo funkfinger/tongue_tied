@@ -24,7 +24,7 @@ class TongueTiedApp < Sinatra::Base
   end
   
   get '/api/betwext/list' do
-    @betwext_list = BetwextRequest.all(:limit => 100)
+    @betwext_list = BetwextRequest.all(:limit => 100, :order => [ :id.desc ])
     haml :betwext_list
   end
   
