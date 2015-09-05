@@ -1,4 +1,4 @@
 %h1 request list
 %ol
   - @request_list.each do |request|
-    %li "#{request.message}" @ "#{request.time_received}"
+    %li "#{request.message}" @ #{Time.at(request.time_received).strftime("%m/%d/%Y %I:%M:%S %p")}
